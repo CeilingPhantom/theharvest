@@ -1,2 +1,3 @@
 savefile
-resources/temp/
+*.pyc
+resources/temp/.
