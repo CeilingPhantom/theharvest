@@ -1,2 +1,2 @@
 # theharvest
-casual continuation of a shitty farming simulator made in python using pygame
+casual continuation of a farming simulator made in python using pygame
