@@ -34,7 +34,7 @@ class Cycle(object):
         self.earncycle_crop        = self.day*5
         self.earncycle_livestock   = self.day*20
 
-        self.evolvecycle_dirt      = self.day*2
+        self.evolvecycle_grass     = self.day*2
         self.evolvecycle_crop      = self.day*5
         self.evolvecycle_livestock = self.day*3
         self.evolvecycle_structure = self.day*10

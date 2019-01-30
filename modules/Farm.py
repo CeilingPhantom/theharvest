@@ -449,8 +449,8 @@ class Farm(Gamestate):
                 evolvecycle = self.cycle.evolvecycle_livestock
             elif self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Structure':
                 evolvecycle = self.cycle.evolvecycle_structure
-            elif self.plowingtiles_dict[plowingtile][0] == 'Dirt0':
-                evolvecycle = self.cycle.evolvecycle_dirt
+            elif self.plowingtiles_dict[plowingtile][0] == 'Grass0':
+                evolvecycle = self.cycle.evolvecycle_grass
             if self.grid_tilecycle[select_row][select_col]%evolvecycle == 0:
                 if self.plowingtiles_dict[plowingtile][0] == 'Grass0' or self.plowingtiles_dict[plowingtile][3] == 1 or self.shed_tiles_reduced_plow[select_row][select_col]:
                     self.grid[select_row][select_col] = self.plowingtiles_dict[plowingtile][0] #tile name
@@ -682,7 +682,7 @@ class Farm(Gamestate):
 
     def earnings(self):
         total_earnings = self.calc_earnings()
-        print total_earnings
+        #print total_earnings
         self.money += total_earnings
         self.persist['total_money_earned'] += total_earnings
         self.persist['money'] = self.money
@@ -690,7 +690,7 @@ class Farm(Gamestate):
 
     def maintenance(self):
         total_maintenance = self.calc_maintenance()
-        print total_maintenance
+        #print total_maintenance
         self.money -= total_maintenance
         self.persist['total_money_spent'] += total_maintenance
         self.persist['money'] = self.money
@@ -703,12 +703,12 @@ class Farm(Gamestate):
         #Functionality that works around time
         elif event.type == USEREVENT+1:
             self.timer += 1
-            print self.timer
+            #print self.timer
             self.autosavetimer += 1
             self.persist['timer'] = self.timer
             self.persist['autosavetimer'] = self.autosavetimer
             self.grid_tilecycle_advance()
-            print self.grid_tilecycle
+            #print self.grid_tilecycle
             self.earnings()
             self.maintenance()
 
@@ -777,10 +777,10 @@ class Farm(Gamestate):
         #Advance timer
         elif event.type == KEYDOWN and event.key == K_g:
             self.timer += 1
-            print self.timer
+            #print self.timer
             self.persist['timer'] = self.timer
             self.grid_tilecycle_advance()
-            print self.grid_tilecycle
+            #print self.grid_tilecycle
             self.earnings()
             self.maintenance()
 
