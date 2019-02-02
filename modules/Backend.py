@@ -173,7 +173,7 @@ class Tile(object):
 
 
 #The types of Tiles
-Grass0      = Tile("Grass0",      "Grass",             "None",      "All",    "grass0_0.png",       "grass0_1.png",
+Grass0      = Tile("Grass0",      "Grass",             "Base",      "All",    "grass0_0.png",       "grass0_1.png",
                    "grass0_0.png", "grass0_2.png", 0, 0, 0, 0)
 
 Dirt0       = Tile("Dirt0",       "Dirt",              "None",      "All",    "dirt0.png",          "dirt0.png",
@@ -446,7 +446,7 @@ class Load(object):
     '''
     Loads The Harvest's save data, or creates new save data if none is found
     '''
-    def __init__(self, savefile, grid_height, grid_width, starting_money):
+    def __init__(self, savefile, grid_height, grid_width, viewablegrid_height, viewablegrid_width, starting_money):
         self.savefile = os.path.join(savefile)
         self.new_game = not os.path.isfile(self.savefile)
 
@@ -454,6 +454,8 @@ class Load(object):
         self.grid_tilecycle = []
         self.grid_height = grid_height
         self.grid_width = grid_width
+        self.viewablegrid_height = viewablegrid_height
+        self.viewablegrid_width = viewablegrid_width
         self.money = starting_money
         self.timer = 0
         self.days_total = 0
@@ -644,9 +646,11 @@ class Load(object):
 #and also variables to be used in game states
 grid_h = 8
 grid_w = 14
+viewablegrid_h = 4
+viewablegrid_w = 7
 start_money = 1000.0
 
-load = Load('savefile', grid_h, grid_w, start_money)
+load = Load('savefile', grid_h, grid_w, viewablegrid_h, viewablegrid_w, start_money)
 
 load.loadsave()
 

@@ -31,6 +31,8 @@ class Gamestate(object):
         self.cycle = be.cycle
         self.grid_w = be.grid_w
         self.grid_h = be.grid_h
+        self.viewablegrid_w = be.viewablegrid_w
+        self.viewablegrid_h = be.viewablegrid_h
         self.bordergfx_raw = be.bordergfx
         self.options_btnimg_raw = be.options_btnimg
         self.seasongfx_summer_raw = be.seasongfx_summer

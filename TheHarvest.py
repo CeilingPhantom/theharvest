@@ -40,6 +40,7 @@ from modules.Settings import Settings
 from modules.Stats import Stats
 from modules.Info import Info
 from modules.Tutorial import Tutorial
+from modules.Money import Money
 
 class Game(object):
     '''
@@ -121,7 +122,8 @@ if __name__ == '__main__':
                'Settings': Settings(),
                'Stats': Stats(),
                'Info': Info(),
-               'Tutorial': Tutorial()
+               'Tutorial': Tutorial(),
+               'Money': Money()
               }
     game = Game(display, screens, 'Mainmenu')
     game.run()

@@ -104,7 +104,6 @@ class Farm(Gamestate):
         self.shed_affectedtiles_lvl3 = self.persist['shed_affectedtiles_lvl3']
         self.silo_affectedtiles_lvl3 = self.persist['silo_affectedtiles_lvl3']
         self.tile_imgs = self.persist['tile_imgs']
-        self.tile_imgs_currentframe = self.persist['tile_imgs_currentframe']
         self.sfxvol = self.persist['sfxvol']
         self.musicvol = self.persist['musicvol']
 
@@ -179,33 +178,33 @@ class Farm(Gamestate):
             self.sidebar_tilestab1txt_rect = self.sidebar_tilestab1txt.get_rect(topright=(self.sidebar_tilestab_leftx2-2*self.sidebar_highlight_borderthick, self.sidebar_tilestab_topy+self.sidebar_highlight_borderthick))
             self.sidebar_tilestab2txt_rect = self.sidebar_tilestab2txt.get_rect(topright=(self.sidebar_bordergfx_right_topleftx-2*self.sidebar_highlight_borderthick, self.sidebar_tilestab_topy+self.sidebar_highlight_borderthick-self.sidebar_tilestab_yadjust))
 
-    def set_tile_imgs_afterbuy(self):
+    def set_tile_imgs_afterbuy(self, row, col):
         '''
-        Updates the visuals for the grid which is the player's farm after a tile is bought
+        Updates the visuals for a tile on the player's farm after a tile is bought
         '''
-        self.tile_imgs = []
-        for row in range(self.grid_h):
-            self.tile_imgs.append([])
-            for col in range(self.grid_w):
-                if self.tile_imgs_currentframe == 0:
-                    drawtileimg = self.tiles[self.grid[row][col]].img0
-                elif self.tile_imgs_currentframe == 1:
-                    drawtileimg = self.tiles[self.grid[row][col]].img1
-                elif self.tile_imgs_currentframe == 2:
-                    drawtileimg = self.tiles[self.grid[row][col]].img2
-                elif self.tile_imgs_currentframe == 3:
-                    drawtileimg = self.tiles[self.grid[row][col]].img3
-                img = pg.transform.scale(drawtileimg, (self.tile_side, self.tile_side))
-                self.tile_imgs[row].append(img)
+        self.tile_imgs[row][col] = pg.transform.scale(self.tiles[self.grid[row][col]].img0, (self.tile_side, self.tile_side))
         self.persist['tile_imgs'] = self.tile_imgs
 
     def set_tile_imgs(self):
         '''
-        Updates the visuals for the grid which is the player's farm
+        Updates the visuals for the player's farm
         '''
-        self.set_tile_imgs_afterbuy()
-        self.tile_imgs_currentframe = (self.tile_imgs_currentframe + 1)%4
-        self.persist['tile_imgs_currentframe'] = self.tile_imgs_currentframe
+        self.tile_imgs = []
+        for row in range(self.viewablegrid_h):
+            self.tile_imgs.append([])
+            for col in range(self.viewablegrid_w):
+                tile_imgs_currentframe = self.grid_tilecycle[row][col]%4
+                if tile_imgs_currentframe == 0:
+                    drawtileimg = self.tiles[self.grid[row][col]].img0
+                elif tile_imgs_currentframe == 1:
+                    drawtileimg = self.tiles[self.grid[row][col]].img1
+                elif tile_imgs_currentframe == 2:
+                    drawtileimg = self.tiles[self.grid[row][col]].img2
+                elif tile_imgs_currentframe == 3:
+                    drawtileimg = self.tiles[self.grid[row][col]].img3
+                img = pg.transform.scale(drawtileimg, (self.tile_side, self.tile_side))
+                self.tile_imgs[row].append(img)
+        self.persist['tile_imgs'] = self.tile_imgs
 
     def set_display_total_money(self):
         '''
@@ -250,7 +249,7 @@ class Farm(Gamestate):
         self.persist['grid'] = self.grid
         self.persist['plowingtiles_dict'] = self.plowingtiles_dict
         self.persist['plowingtile_counter'] = self.plowingtile_counter
-        self.set_tile_imgs_afterbuy()
+        self.set_tile_imgs_afterbuy(row, col)
 
     def kill_tiles(self):
         '''
@@ -466,18 +465,18 @@ class Farm(Gamestate):
                         self.grid[select_row][select_col] = 'Construct0'
                         self.persist['grid'] = self.grid
                     self.persist['plowingtiles_dict'] = self.plowingtiles_dict
-                #Reset timer for tile in development
+                #Reset timer for tile in development/that has been finished
                 self.grid_tilecycle[select_row][select_col] = 0
+                self.set_tile_imgs_afterbuy(select_row, select_col)
         self.calc_shed_tiles_reduced_plow()
         self.calc_greenhouse_tiles_season_all()
         self.calc_silo_tiles_livestock_can()
         self.reset_plowingtile_counter()
         self.kill_tiles()
-        self.set_tile_imgs_afterbuy()
 
     def set_highlight(self):
         '''
-        Highlights the tile being bought from the sidebar and the tile which the player's mouse is hovering over on the player's farm
+        Highlights the tile being bought from the sidebar and the grid tile which the player's mouse is hovering over on the player's farm
         '''
         pos = pg.mouse.get_pos()
         if self.buytile is not None:
@@ -491,10 +490,10 @@ class Farm(Gamestate):
             if self.sidebar_w <= pos[0] <= self.screen_width and 0 <= pos[1] <= self.btmbar_toplefty:
                 select_col = (pos[0] - self.sidebar_w)/self.tile_side
                 select_row = pos[1]/self.tile_side
-                if select_col >= 14:
-                    select_col = 13
-                if select_row >= 8:
-                    select_row = 7
+                if select_col >= self.viewablegrid_w:
+                    select_col = self.viewablegrid_w-1
+                if select_row >= self.viewablegrid_h:
+                    select_row = self.viewablegrid_h-1
                 self.tile_highlight_x = self.sidebar_w + select_col*self.tile_side
                 self.tile_highlight_y = select_row*self.tile_side
                 if self.money > 0:
@@ -605,13 +604,23 @@ class Farm(Gamestate):
             self.play_sfx(self.sfx_clicked)
             self.save_background_img()
 
+    def goto_money(self, event):
+        '''
+        Determines when to go to the Money screen
+        '''
+        if self.displaytotalmoney_rightx-self.moneytxt_rect.w/2 < event.pos[0] < self.displaytotalmoney_rightx+self.moneytxt_rect.w/2 and (self.displaybtmbar_yalign-self.moneytxt_rect.h/2 < event.pos[1] < self.displaybtmbar_yalign+self.moneytxt_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < event.pos[1] < self.screen_height-self.bordergfx_h):
+            self.done = True
+            self.next_state = 'Money'
+            self.play_sfx(self.sfx_clicked)
+            self.save_background_img()
+
     def grid_tilecycle_advance(self):
         '''
         Advances each tile's timer and cycle
         '''
         for row in range(self.grid_h):
             for col in range(self.grid_w):
-                if self.grid[row][col] != 'Grass0':
+                if self.tiles[self.grid[row][col]].tiletype != 'None':
                     self.grid_tilecycle[row][col] += 1
                 else:
                     self.grid_tilecycle[row][col] = 0
@@ -819,10 +828,10 @@ class Farm(Gamestate):
                 if self.sidebar_w <= event.pos[0] <= self.screen_width and 0 <= event.pos[1] <= self.grid_h*self.tile_side:
                     select_col = (event.pos[0] - self.sidebar_w)/self.tile_side
                     select_row = event.pos[1]/self.tile_side
-                    if select_col >= 14:
-                        select_col = 13
-                    if select_row >= 8:
-                        select_row = 7
+                    if select_col >= self.viewablegrid_w:
+                        select_col = self.viewablegrid_w-1
+                    if select_row >= self.viewablegrid_h:
+                        select_row = self.viewablegrid_h-1
 
                     #Go to Tile screen
                     if self.buytile is None:
@@ -851,7 +860,7 @@ class Farm(Gamestate):
                                         self.calc_shed_tiles_reduced_plow()
                                         self.set_total_money_highest_lowest()
                                         self.play_sfx(self.sfx_money)
-
+                                        self.set_tile_imgs_afterbuy(select_row, select_col)
                                     else:
                                         self.play_sfx(self.sfx_denied)
 
@@ -869,6 +878,7 @@ class Farm(Gamestate):
                                         self.calc_shed_tiles_reduced_plow()
                                         self.set_total_money_highest_lowest()
                                         self.play_sfx(self.sfx_money)
+                                        self.set_tile_imgs_afterbuy(select_row, select_col)
                                     else:
                                         self.play_sfx(self.sfx_denied)
 
@@ -891,7 +901,7 @@ class Farm(Gamestate):
                                     elif self.tiles[self.buytile].displayname == 'Silo':
                                         self.calc_silo_tiles_livestock_can()
                                     self.play_sfx(self.sfx_money)
-                                self.set_tile_imgs_afterbuy()
+                                    self.set_tile_imgs_afterbuy(select_row, select_col)
 
                             else:
                                 self.play_sfx(self.sfx_denied)
@@ -918,6 +928,7 @@ class Farm(Gamestate):
                     if self.buytile is None:
 
                         #Determines which tile the player has selected to buy from the sidebar
+                        #and when to go to the Tile screen for the corresponding tile selected
                         if self.select_sidebar_tilestab1:
                             select_sidebar_tilestab = self.tilestobuya
                         else:
@@ -934,6 +945,7 @@ class Farm(Gamestate):
                 elif self.buytile is None:
                     self.goto_tutorial(event)
                     self.goto_options(event)
+                    self.goto_money(event)
 
         elif event.type == MOUSEMOTION:
             self.set_highlight()
@@ -970,8 +982,8 @@ class Farm(Gamestate):
             surface.blit(self.bordergfx_ver, (self.sidebar_tilestab_leftx2, self.sidebar_tilestab_topy + self.sidebar_tilestab_h-(1+nth_bordergfx)*self.bordergfx_w))
 
         #Draw the player's farm
-        for row in range(self.grid_h):
-            for col in range(self.grid_w):
+        for row in range(self.viewablegrid_h):
+            for col in range(self.viewablegrid_w):
                 surface.blit(self.tile_imgs[row][col], (self.sidebar_w+col*self.tile_side, row*self.tile_side))
 
         #Draw sidebar tabs of tiles to buy

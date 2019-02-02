@@ -37,7 +37,6 @@ class Mainmenu(Gamestate):
         self.persist['shed_affectedtiles_lvl3'] = None
         self.persist['silo_affectedtiles_lvl3'] = None
         self.persist['tile_imgs'] = None
-        self.persist['tile_imgs_currentframe'] = 0
         self.persist['sfxvol'] = be.sfxvol
         self.persist['musicvol'] = be.musicvol
         self.persist['total_money_earned'] = be.total_money_earned
