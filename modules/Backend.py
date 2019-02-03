@@ -173,7 +173,7 @@ class Tile(object):
 
 
 #The types of Tiles
-Grass0      = Tile("Grass0",      "Grass",             "Base",      "All",    "grass0_0.png",       "grass0_1.png",
+Grass0      = Tile("Grass0",      "Grass",             "None",      "All",    "grass0_0.png",       "grass0_1.png",
                    "grass0_0.png", "grass0_2.png", 0, 0, 0, 0)
 
 Dirt0       = Tile("Dirt0",       "Dirt",              "None",      "All",    "dirt0.png",          "dirt0.png",
@@ -644,10 +644,10 @@ class Load(object):
 
 #Paramters for loading a save,
 #and also variables to be used in game states
-grid_h = 8
-grid_w = 14
-viewablegrid_h = 4
-viewablegrid_w = 7
+grid_h = 20
+grid_w = 20
+viewablegrid_h = 8
+viewablegrid_w = 14
 start_money = 1000.0
 
 load = Load('savefile', grid_h, grid_w, viewablegrid_h, viewablegrid_w, start_money)

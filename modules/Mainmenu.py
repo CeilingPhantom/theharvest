@@ -17,6 +17,7 @@ class Mainmenu(Gamestate):
         #Initalise data values that need to be passed between states
         self.persist['grid'] = be.grid
         self.persist['grid_tilecycle'] = be.grid_tilecycle
+        self.persist['viewablegrid_topleft'] = {'x': 0, 'y': 0}   #save topleft into savefile
         self.persist['money'] = be.money
         self.persist['select_col'] = None
         self.persist['select_row'] = None

@@ -85,6 +85,7 @@ class Tile(Gamestate):
 
         self.persist = persistent
         self.grid = self.persist['grid']
+        self.grid_tilecycle = self.persist['grid_tilecycle']
         self.money = self.persist['money']
         self.select_col = self.persist['select_col']
         self.select_row = self.persist['select_row']
@@ -348,11 +349,13 @@ class Tile(Gamestate):
         self.grid[self.select_row][self.select_col] = 'Dirt0'
         self.money += self.sellp
         self.plowingtile_counter += 1
+        self.grid_tilecycle[row][col] = 0
         self.persist['grid'] = self.grid
         self.persist['money'] = self.money
         self.persist['total_money_earned'] += self.sellp
         self.persist['plowingtiles_dict'] = self.plowingtiles_dict
         self.persist['plowingtile_counter'] = self.plowingtile_counter
+        self.persist['grid_tilecycle'] = self.grid_tilecycle
         self.set_total_money_highest_lowest()
         self.next_state = 'Farm'
         self.done = True
@@ -381,11 +384,13 @@ class Tile(Gamestate):
         self.grid[self.select_row][self.select_col] = 'Dirt0'
         self.money -= self.removep
         self.plowingtile_counter += 1
+        self.grid_tilecycle[row][col] = 0
         self.persist['grid'] = self.grid
         self.persist['total_money_spent'] += self.removep
         self.persist['money'] = self.money
         self.persist['plowingtiles_dict'] = self.plowingtiles_dict
         self.persist['plowingtile_counter'] = self.plowingtile_counter
+        self.persist['grid_tilecycle'] = self.grid_tilecycle
         self.set_total_money_highest_lowest()
         self.next_state = 'Farm'
         self.done = True
