@@ -30,7 +30,7 @@ class Tile(Gamestate):
         self.xalign3 = self.xalign1 + self.box_w/2 - self.xadjust #670
         self.xalign4 = self.xalign2 + self.box_w/2 - self.xadjust
 
-        self.tc_mdtopx = self.screen_centerx - self.box_w/4 + self.xadjust
+        self.tc_mdtopx = self.screen_centerx - self.box_w/4 + self.xadjust # tc = tier current
         self.tier_mdtopy = self.screen_centery + 3*self.yadjust
         self.earntxt_y = self.tier_mdtopy + self.ydist - self.yadjust
         self.maintxt_y = self.earntxt_y + self.ydist - 2*self.yadjust

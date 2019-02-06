@@ -614,7 +614,7 @@ class Farm(Gamestate):
         '''
         Determines when to go to the Money screen
         '''
-        if self.displaytotalmoney_rightx-self.moneytxt_rect.w/2 < event.pos[0] < self.displaytotalmoney_rightx+self.moneytxt_rect.w/2 and (self.displaybtmbar_yalign-self.moneytxt_rect.h/2 < event.pos[1] < self.displaybtmbar_yalign+self.moneytxt_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < event.pos[1] < self.screen_height-self.bordergfx_h):
+        if self.displaytotalmoney_rightx-self.moneytxt_rect.w < event.pos[0] < self.displaytotalmoney_rightx and (self.displaybtmbar_yalign-self.moneytxt_rect.h/2 < event.pos[1] < self.displaybtmbar_yalign+self.moneytxt_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < event.pos[1] < self.screen_height-self.bordergfx_h):
             self.done = True
             self.next_state = 'Money'
             self.play_sfx(self.sfx_clicked)
