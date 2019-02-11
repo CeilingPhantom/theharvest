@@ -40,6 +40,8 @@ class Mainmenu(Gamestate):
         self.persist['tile_imgs'] = None
         self.persist['sfxvol'] = be.sfxvol
         self.persist['musicvol'] = be.musicvol
+        self.persist['thisday_earnings'] = 0
+        self.persist['thisday_maintenance'] = 0
         self.persist['total_money_earned'] = be.total_money_earned
         self.persist['total_money_spent'] = be.total_money_spent
         self.persist['total_money_highest'] = be.total_money_highest

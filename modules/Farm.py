@@ -130,8 +130,8 @@ class Farm(Gamestate):
         self.calc_shed_tiles_reduced_plow()
         self.calc_greenhouse_tiles_season_all()
         self.calc_silo_tiles_livestock_can()
-        #self.calc_maintenance()
-        #self.calc_earnings()
+        self.calc_maintenance()
+        self.calc_earnings()
 
         self.sidebar_bordergfx_hor_count = (self.sidebar_w+self.extbound)/self.bordergfx_w + 1
         self.sidebar_bordergfx_ver_count = self.sidebar_h/self.bordergfx_w + 1
@@ -633,7 +633,7 @@ class Farm(Gamestate):
         '''
         Calculate earnings as of current second
         '''
-        total_earnings = 0.0
+        thisday_earnings = 0.0
         for row in range(self.grid_h):
             for col in range(self.grid_w):
                 earncycle = 0
@@ -648,14 +648,15 @@ class Farm(Gamestate):
                             earnings = float(earnings)*(1.0+self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[row][col])
                         elif self.silo_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Livestock':
                             earnings = float(earnings)*(1.0+self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[row][col])
-                        total_earnings += earnings
-        return total_earnings
+                        thisday_earnings += earnings
+        self.persist['thisday_earnings'] = thisday_earnings
+        return thisday_earnings
 
     def calc_maintenance(self):
         '''
         Calculate maintenance as of current second
         '''
-        total_maintenance = 0.0
+        thisday_maintenance = 0.0
         for row in range(self.grid_h):
             for col in range(self.grid_w):
                 maincycle = 0
@@ -672,7 +673,7 @@ class Farm(Gamestate):
                             maintenance = float(maintenance)*(1.0-self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[row][col])
                         elif self.silo_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Livestock':
                             maintenance = float(maintenance)*(1.0-self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[row][col])
-                        total_maintenance += maintenance
+                        thisday_maintenance += maintenance
 
         for plowingtile in self.plowingtiles_dict.keys():
             plow_maincycle = 0
@@ -689,22 +690,23 @@ class Farm(Gamestate):
                         maintenance = float(maintenance)*(1.0-self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]])
                     elif self.silo_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]] and self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Livestock':
                         maintenance = float(maintenance)*(1.0-self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]])
-                    total_maintenance += maintenance
-        return total_maintenance
+                    thisday_maintenance += maintenance
+        self.persist['thisday_maintenance'] = thisday_maintenance
+        return thisday_maintenance
 
     def earnings(self):
-        total_earnings = self.calc_earnings()
-        #print total_earnings
-        self.money += total_earnings
-        self.persist['total_money_earned'] += total_earnings
+        thisday_earnings = self.calc_earnings()
+        #print thisday_earnings
+        self.money += thisday_earnings
+        self.persist['total_money_earned'] += thisday_earnings
         self.persist['money'] = self.money
         self.set_total_money_highest_lowest()
 
     def maintenance(self):
-        total_maintenance = self.calc_maintenance()
-        #print total_maintenance
-        self.money -= total_maintenance
-        self.persist['total_money_spent'] += total_maintenance
+        thisday_maintenance = self.calc_maintenance()
+        #print thisday_maintenance
+        self.money -= thisday_maintenance
+        self.persist['total_money_spent'] += thisday_maintenance
         self.persist['money'] = self.money
         self.set_total_money_highest_lowest()
 

@@ -24,8 +24,7 @@ class Tutorial(Gamestate):
                                          self.title_rect[1].centery+8*self.statinfo_ydist-7*self.statinfo_ydist/4,
                                          self.title_rect[1].centery+9*self.statinfo_ydist-9*self.statinfo_ydist/4,
                                          self.title_rect[1].centery+10*self.statinfo_ydist-11*self.statinfo_ydist/4,
-                                         self.title_rect[1].centery+11*self.statinfo_ydist-13*self.statinfo_ydist/4,
-                                         self.title_rect[1].centery+12*self.statinfo_ydist-15*self.statinfo_ydist/4
+                                         self.title_rect[1].centery+11*self.statinfo_ydist-13*self.statinfo_ydist/4
                                         )
         self.yourfarmtxt_rect_centery = (self.controlstxt_rect_centery[9]+2*self.statinfo_ydist,
                                          self.controlstxt_rect_centery[9]+3*self.statinfo_ydist-self.statinfo_ydist/4,
@@ -49,7 +48,7 @@ class Tutorial(Gamestate):
                             self.font_body4.render('To Options', True, self.c_black),
                             self.font_body4.render('Deselect tile', True, self.c_black)
                            )
-        self.controlstxt_rect = (self.controlstxt[0].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.                         controlstxt_rect_centery[0])),
+        self.controlstxt_rect = (self.controlstxt[0].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.controlstxt_rect_centery[0])),
                                  self.controlstxt[1].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.controlstxt_rect_centery[1])),
                                  self.controlstxt[2].get_rect(midright=(self.settingsstatinfo_xalignright, self.controlstxt_rect_centery[2])),
                                  self.controlstxt[3].get_rect(midright=(self.settingsstatinfo_xalignright, self.controlstxt_rect_centery[3])),
