@@ -845,12 +845,17 @@ class Farm(Gamestate):
         #end of cheats
 
         elif event.type == MOUSEBUTTONDOWN:
+            # right click, cancel action
             if event.button == 3:
                 if self.buytile is not None:
                     self.buytile = None
                     self.persist['buytile'] = self.buytile
                     self.play_sfx(self.sfx_clicked)
 
+            # middle click, drag grid around
+            #if event.button == 2:
+
+            # left click, do action
             elif event.button == 1:
                 if self.sidebar_w <= event.pos[0] <= self.screen_width and 0 <= event.pos[1] <= self.btmbar_toplefty:
                     select_col = (event.pos[0] - self.sidebar_w)/self.tile_side + self.viewablegrid_topleft['x']
