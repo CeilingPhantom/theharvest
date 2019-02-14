@@ -106,10 +106,13 @@ class Settings(Gamestate):
         Resets the player's save
         '''
         self.persist['grid'] = []
-        for row in range(self.grid_h):
-            self.persist['grid'].append([])
-            for col in range(self.grid_w):
-                self.persist['grid'][row].append('Grass0')
+        self.grid_tilecycle = []
+        for row in range(self.grid_height):
+            self.grid.append([])
+            self.grid_tilecycle.append([])
+            for col in range(self.grid_width):
+                self.grid[row].append('Grass0')
+                self.grid_tilecycle[row].append(0)
         self.persist['money'] = self.start_money
         self.persist['timer'] = 0
         self.persist['days_total'] = 0

@@ -21,16 +21,22 @@ class Cycle(object):
         1 maintenance cycle = 3 seconds = 1 day
         1 earn cycle = 1/2 minute = 10 days
         '''
-        self.timecycle = 1000 #milliseconds
+        self.timecycle = 100 #milliseconds
 
-        self.day                   = 6 #seconds
+        self.timecycle_sec_mult = 10 # multiplier to make timecycle 1 second
 
-        self.maincycle             = self.day/2 #1/2 day
+        self.tile_imgs_cycle = 4*self.timecycle_sec_mult
+
+        self.autosave_cycle = 300*self.timecycle_sec_mult
+
+        self.day                   = 6*self.timecycle_sec_mult
+
+        self.maincycle             = self.day/2
         self.maincycle_crop        = self.day/2
         self.maincycle_livestock   = self.day
         self.maincycle_structure   = self.day*5
 
-        self.earncycle             = self.day*10 #days
+        self.earncycle             = self.day*10
         self.earncycle_crop        = self.day*5
         self.earncycle_livestock   = self.day*20
 
