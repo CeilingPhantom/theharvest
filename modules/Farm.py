@@ -715,6 +715,9 @@ class Farm(Gamestate):
 
     def get_event(self, event):
 
+        if event.type == QUIT:
+            self.quit = True
+
         #Shifting up and down the viewable grid
         keyspressed = pg.key.get_pressed()
         if keyspressed[pg.K_w]:
@@ -744,9 +747,6 @@ class Farm(Gamestate):
                 self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
                 self.viewablegrid_w_add = bool(self.viewablegrid_topleft['x']%self.tile_side)
                 self.set_tile_imgs()
-
-        if event.type == QUIT:
-            self.quit = True
 
         #Functionality that works around time
         elif event.type == USEREVENT+1:
