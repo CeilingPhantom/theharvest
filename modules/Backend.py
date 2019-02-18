@@ -21,9 +21,9 @@ class Cycle(object):
         1 maintenance cycle = 3 seconds = 1 day
         1 earn cycle = 1/2 minute = 10 days
         '''
-        self.timecycle = 100 #milliseconds
+        self.timecycle = 50 #milliseconds
 
-        self.timecycle_sec_mult = 10 # multiplier to make timecycle 1 second
+        self.timecycle_sec_mult = 20 # multiplier to make timecycle 1 second
 
         self.tile_imgs_cycle = 4*self.timecycle_sec_mult
 
