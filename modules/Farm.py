@@ -1016,41 +1016,38 @@ class Farm(Gamestate):
         self.set_tooltip()
 
     def draw(self, surface):
-        #Draw background
-        for row in range(1+(self.screen_height/self.background_dirt0_tiles_side)):
-            for col in range(1+(self.screen_width/self.background_dirt0_tiles_side)):
-                img = pg.transform.scale(self.tiles['Dirt0'].img0, (self.background_dirt0_tiles_side, self.background_dirt0_tiles_side))
-                surface.blit(img, (col*self.background_dirt0_tiles_side, row*self.background_dirt0_tiles_side))
-
-        #Draw sidebar tabs of tiles to buy
-        if self.select_sidebar_tilestab1:
-            for nth_bordergfx in range(1+(self.sidebar_tilestab_w/self.bordergfx_w)):
-                surface.blit(self.bordergfx_hor, (self.sidebar_tilestab_leftx2+nth_bordergfx*self.bordergfx_w, self.sidebar_tilestab_topy + self.sidebar_tilestab_h))
-        else:
-            for nth_bordergfx in range(1+(self.sidebar_tilestab_w/self.bordergfx_w)):
-                surface.blit(self.bordergfx_hor, (self.sidebar_tilestab_leftx2-(1+nth_bordergfx)*self.bordergfx_w+self.bordergfx_h, self.sidebar_tilestab_topy + self.sidebar_tilestab_h))
-        for nth_bordergfx in range(1+(self.sidebar_tilestab_h/self.bordergfx_w)):
-            surface.blit(self.bordergfx_ver, (self.sidebar_tilestab_leftx2, self.sidebar_tilestab_topy + self.sidebar_tilestab_h-(1+nth_bordergfx)*self.bordergfx_w))
-
         #Draw the player's farm
         for row in range(self.viewablegrid_h+int(self.viewablegrid_h_add)):
             for col in range(self.viewablegrid_w+int(self.viewablegrid_w_add)):
                 surface.blit(self.tile_imgs[row][col], (self.sidebar_w+col*self.tile_side-self.viewablegrid_topleft['x']%self.tile_side, row*self.tile_side-self.viewablegrid_topleft['y']%self.tile_side))
 
+        #Draw background for sidebar and bottom bar
+        img = pg.transform.scale(self.tiles['Dirt0'].img0, (self.background_dirt0_tiles_side, self.background_dirt0_tiles_side))
+        for row in range(1+(self.screen_height/self.background_dirt0_tiles_side)):
+            for col in range(1+(self.sidebar_w/self.background_dirt0_tiles_side)):
+                surface.blit(img, (self.sidebar_w - (1+col)*self.background_dirt0_tiles_side, row*self.background_dirt0_tiles_side))
+        for row in range(1+(self.btmbar_h/self.background_dirt0_tiles_side)):
+            for col in range(1+(self.btmbar_w/self.background_dirt0_tiles_side)):
+                surface.blit(img, (self.sidebar_w + col*self.background_dirt0_tiles_side, self.btmbar_toplefty + row*self.background_dirt0_tiles_side))
+
         #Draw sidebar tabs of tiles to buy
         if self.select_sidebar_tilestab1:
+            for nth_bordergfx in range(1+(self.sidebar_tilestab_w/self.bordergfx_w)):
+                surface.blit(self.bordergfx_hor, (self.sidebar_tilestab_leftx2+nth_bordergfx*self.bordergfx_w, self.sidebar_tilestab_topy + self.sidebar_tilestab_h))
             select_sidebar_tilestab = self.tilestobuya
         else:
+            for nth_bordergfx in range(1+(self.sidebar_tilestab_w/self.bordergfx_w)):
+                surface.blit(self.bordergfx_hor, (self.sidebar_tilestab_leftx2-(1+nth_bordergfx)*self.bordergfx_w+self.bordergfx_h, self.sidebar_tilestab_topy + self.sidebar_tilestab_h))
             select_sidebar_tilestab = self.tilestobuyb
+        for nth_bordergfx in range(1+(self.sidebar_tilestab_h/self.bordergfx_w)):
+            surface.blit(self.bordergfx_ver, (self.sidebar_tilestab_leftx2, self.sidebar_tilestab_topy + self.sidebar_tilestab_h-(1+nth_bordergfx)*self.bordergfx_w))
         for nth_tile, tile in enumerate(select_sidebar_tilestab):
             img = pg.transform.scale(self.tiles[tile].img0, (self.sidebar_tiles_side, self.sidebar_tiles_side))
             surface.blit(img, (self.sidebar_tiles_leftx, self.sidebar_tiles_topy+nth_tile*self.sidebar_tiles_dist))
-            #surface.blit(self.bordergfx_hor, self.sidebar_tiles_topy+nth_tile*self.sidebar_tiles_dist+self.sidebar_tiles_side+)
 
         #Draw border between tiles in sidebar
         for nth_tile_fence in range(len(select_sidebar_tilestab)-1):
             surface.blit(self.bordergfx_hor, (self.sidebar_w/2-self.bordergfx_w/2, self.sidebar_tiles_topy+(1+nth_tile_fence)*self.sidebar_tiles_dist-self.sidebar_tile_yadjust/2-self.bordergfx_h/2))
-
 
         #Draw sidebar horizontal border
         for nth_bordergfx in range(self.sidebar_bordergfx_hor_count):
