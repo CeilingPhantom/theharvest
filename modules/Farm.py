@@ -722,28 +722,28 @@ class Farm(Gamestate):
         keyspressed = pg.key.get_pressed()
         if keyspressed[pg.K_w]:
             if self.viewablegrid_topleft['y'] > 0:
-                self.viewablegrid_topleft['y'] -= 1
+                self.viewablegrid_topleft['y'] -= 2
                 self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
                 self.viewablegrid_h_add = bool(self.viewablegrid_topleft['y']%self.tile_side)
                 self.set_tile_imgs()
 
         if keyspressed[pg.K_a]:
             if self.viewablegrid_topleft['x'] > 0:
-                self.viewablegrid_topleft['x'] -= 1
+                self.viewablegrid_topleft['x'] -= 2
                 self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
                 self.viewablegrid_w_add = bool(self.viewablegrid_topleft['x']%self.tile_side)
                 self.set_tile_imgs()
 
         if keyspressed[pg.K_s]:
             if self.viewablegrid_topleft['y'] < (self.grid_h-self.viewablegrid_h)*self.tile_side:
-                self.viewablegrid_topleft['y'] += 1
+                self.viewablegrid_topleft['y'] += 2
                 self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
                 self.viewablegrid_h_add = bool(self.viewablegrid_topleft['y']%self.tile_side)
                 self.set_tile_imgs()
 
         if keyspressed[pg.K_d]:
             if self.viewablegrid_topleft['x'] < (self.grid_w-self.viewablegrid_w)*self.tile_side:
-                self.viewablegrid_topleft['x'] += 1
+                self.viewablegrid_topleft['x'] += 2
                 self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
                 self.viewablegrid_w_add = bool(self.viewablegrid_topleft['x']%self.tile_side)
                 self.set_tile_imgs()
