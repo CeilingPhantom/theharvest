@@ -781,14 +781,14 @@ class Farm(Gamestate):
         if mousepressed[1]:
             horizontal_shift = (self.mousepos[0]-self.viewablegrid_mousepos[0])/4
             vertical_shift = (self.mousepos[1]-self.viewablegrid_mousepos[1])/4
-            if horizontal_shift < 0:
-                self.viewablegrid_shiftleft(abs(horizontal_shift))
+            if horizontal_shift > 0:
+                self.viewablegrid_shiftleft(horizontal_shift)
             else:
-                self.viewablegrid_shiftright(horizontal_shift)
-            if vertical_shift < 0:
-                self.viewablegrid_shiftup(abs(vertical_shift))
+                self.viewablegrid_shiftright(abs(horizontal_shift))
+            if vertical_shift > 0:
+                self.viewablegrid_shiftup(vertical_shift)
             else:
-                self.viewablegrid_shiftdown(vertical_shift)
+                self.viewablegrid_shiftdown(abs(vertical_shift))
         self.viewablegrid_mousepos = self.mousepos
 
         #Functionality that works around time
