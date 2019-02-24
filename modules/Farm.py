@@ -81,6 +81,8 @@ class Farm(Gamestate):
         self.seasongfx_topy = self.screen_height - self.seasongfx_h
         self.seasongfx_count = self.screen_width/self.seasongfx_w + 1
 
+        self.viewagrid_wasd_shift_px = 2
+
     def startup(self, persistent):
 
         self.persist = persistent
@@ -110,6 +112,8 @@ class Farm(Gamestate):
 
         self.viewablegrid_w_add = bool(self.viewablegrid_topleft['x']%self.tile_side)
         self.viewablegrid_h_add = bool(self.viewablegrid_topleft['y']%self.tile_side)
+
+        self.viewablegrid_mousepos = pg.mouse.get_pos()
 
         #Reset autosave timer if player just saved
         if self.persist['saved']:
@@ -186,8 +190,9 @@ class Farm(Gamestate):
         '''
         Updates the visuals for a tile on the player's farm after a tile is bought
         '''
-        self.tile_imgs[row-self.viewablegrid_topleft['y']/self.tile_side][col-self.viewablegrid_topleft['x']/self.tile_side] = pg.transform.scale(self.tiles[self.grid[row][col]].img0, (self.tile_side, self.tile_side))
-        self.persist['tile_imgs'] = self.tile_imgs
+        if row*self.tile_side >= self.viewablegrid_topleft['y'] and row*self.tile_side <= self.viewablegrid_topleft['y']+self.viewablegrid_h*self.tile_side and col*self.tile_side >= self.viewablegrid_topleft['x'] and col*self.tile_side <= self.viewablegrid_topleft['x']+self.viewablegrid_w*self.tile_side:
+            self.tile_imgs[row-self.viewablegrid_topleft['y']/self.tile_side][col-self.viewablegrid_topleft['x']/self.tile_side] = pg.transform.scale(self.tiles[self.grid[row][col]].img0, (self.tile_side, self.tile_side))
+            self.persist['tile_imgs'] = self.tile_imgs
 
     def set_tile_imgs(self):
         '''
@@ -497,14 +502,14 @@ class Farm(Gamestate):
                 if tile == self.buytile:
                     self.select_sidebar_tiles_topy = self.sidebar_tiles_topy + nth_tile*self.sidebar_tiles_dist
             if self.sidebar_w <= pos[0] <= self.screen_width and 0 <= pos[1] <= self.btmbar_toplefty:
-                select_col = (pos[0] - self.sidebar_w)/self.tile_side + self.viewablegrid_topleft['x']/self.tile_side
-                select_row = pos[1]/self.tile_side + self.viewablegrid_topleft['y']/self.tile_side
+                select_col = (pos[0]-self.sidebar_w+self.viewablegrid_topleft['x']%self.tile_side)/self.tile_side + self.viewablegrid_topleft['x']/self.tile_side
+                select_row = (pos[1]+self.viewablegrid_topleft['y']%self.tile_side)/self.tile_side + self.viewablegrid_topleft['y']/self.tile_side
                 if not self.viewablegrid_w_add and select_col >= self.viewablegrid_topleft['x']/self.tile_side + self.viewablegrid_w:
                     select_col -= 1
                 if not self.viewablegrid_h_add and select_row >= self.viewablegrid_topleft['y']/self.tile_side + self.viewablegrid_h:
                     select_row -= 1
-                self.tile_highlight_x = self.sidebar_w + (select_col-self.viewablegrid_topleft['x']/self.tile_side)*self.tile_side - self.viewablegrid_topleft['x']
-                self.tile_highlight_y = (select_row-self.viewablegrid_topleft['y']/self.tile_side)*self.tile_side
+                self.tile_highlight_x = self.sidebar_w + (select_col-self.viewablegrid_topleft['x']/self.tile_side)*self.tile_side - self.viewablegrid_topleft['x']%self.tile_side
+                self.tile_highlight_y = (select_row-self.viewablegrid_topleft['y']/self.tile_side)*self.tile_side - self.viewablegrid_topleft['y']%self.tile_side
                 if self.money > 0:
                     if self.grid[select_row][select_col] == 'Grass0':
                         if self.tiles[self.buytile].tiletype == 'Crop':
@@ -593,31 +598,31 @@ class Farm(Gamestate):
             self.tooltiptile = None
             self.tooltipdisplayed = False
 
-    def goto_tutorial(self, event):
+    def goto_tutorial(self):
         '''
         Determines when to go to the Tutorial screen
         '''
-        if self.tutorial_btntxt_rect_rightx-self.tutorial_btntxt_rect.w/2 < event.pos[0] < self.tutorial_btntxt_rect_rightx+self.tutorial_btntxt_rect.w/2 and (self.displaybtmbar_yalign-self.tutorial_btntxt_rect.h/2 < event.pos[1] < self.displaybtmbar_yalign+self.tutorial_btntxt_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < event.pos[1] < self.screen_height-self.bordergfx_h):
+        if self.tutorial_btntxt_rect_rightx-self.tutorial_btntxt_rect.w/2 < self.mousepos[0] < self.tutorial_btntxt_rect_rightx+self.tutorial_btntxt_rect.w/2 and (self.displaybtmbar_yalign-self.tutorial_btntxt_rect.h/2 < self.mousepos[1] < self.displaybtmbar_yalign+self.tutorial_btntxt_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < self.mousepos[1] < self.screen_height-self.bordergfx_h):
             self.done = True
             self.next_state = 'Tutorial'
             self.play_sfx(self.sfx_clicked)
             self.save_background_img()
 
-    def goto_options(self, event):
+    def goto_options(self):
         '''
         Determines when to go to the Options screen
         '''
-        if self.options_btnimg_rect_rightx-self.options_btnimg_rect.w/2 < event.pos[0] < self.options_btnimg_rect_rightx+self.options_btnimg_rect.w/2 and (self.displaybtmbar_yalign-self.options_btnimg_rect.h/2 < event.pos[1] < self.displaybtmbar_yalign+self.options_btnimg_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < event.pos[1] < self.screen_height-self.bordergfx_h):
+        if self.options_btnimg_rect_rightx-self.options_btnimg_rect.w/2 < self.mousepos[0] < self.options_btnimg_rect_rightx+self.options_btnimg_rect.w/2 and (self.displaybtmbar_yalign-self.options_btnimg_rect.h/2 < self.mousepos[1] < self.displaybtmbar_yalign+self.options_btnimg_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < self.mousepos[1] < self.screen_height-self.bordergfx_h):
             self.done = True
             self.next_state = 'Options'
             self.play_sfx(self.sfx_clicked)
             self.save_background_img()
 
-    def goto_money(self, event):
+    def goto_money(self):
         '''
         Determines when to go to the Money screen
         '''
-        if self.displaytotalmoney_rightx-self.moneytxt_rect.w < event.pos[0] < self.displaytotalmoney_rightx and (self.displaybtmbar_yalign-self.moneytxt_rect.h/2 < event.pos[1] < self.displaybtmbar_yalign+self.moneytxt_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < event.pos[1] < self.screen_height-self.bordergfx_h):
+        if self.displaytotalmoney_rightx-self.moneytxt_rect.w < self.mousepos[0] < self.displaytotalmoney_rightx and (self.displaybtmbar_yalign-self.moneytxt_rect.h/2 < self.mousepos[1] < self.displaybtmbar_yalign+self.moneytxt_rect.h/2 and self.btmbar_toplefty+self.bordergfx_h < self.mousepos[1] < self.screen_height-self.bordergfx_h):
             self.done = True
             self.next_state = 'Money'
             self.play_sfx(self.sfx_clicked)
@@ -713,50 +718,86 @@ class Farm(Gamestate):
         self.persist['money'] = self.money
         self.set_total_money_highest_lowest()
 
+    def viewablegrid_shiftup(self, shift_px):
+        if self.viewablegrid_topleft['y'] > 0:
+            self.viewablegrid_topleft['y'] -= shift_px
+            if self.viewablegrid_topleft['y'] < 0:
+                self.viewablegrid_topleft['y'] = 0
+            self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
+            self.viewablegrid_h_add = bool(self.viewablegrid_topleft['y']%self.tile_side)
+            self.set_tile_imgs()
+
+    def viewablegrid_shiftleft(self, shift_px):
+        if self.viewablegrid_topleft['x'] > 0:
+            self.viewablegrid_topleft['x'] -= shift_px
+            if self.viewablegrid_topleft['x'] < 0:
+                self.viewablegrid_topleft['x'] = 0
+            self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
+            self.viewablegrid_w_add = bool(self.viewablegrid_topleft['x']%self.tile_side)
+            self.set_tile_imgs()
+
+    def viewablegrid_shiftdown(self, shift_px):
+        if self.viewablegrid_topleft['y'] < (self.grid_h-self.viewablegrid_h)*self.tile_side:
+            self.viewablegrid_topleft['y'] += shift_px
+            if self.viewablegrid_topleft['y'] > (self.grid_h-self.viewablegrid_h)*self.tile_side:
+                self.viewablegrid_topleft['y'] = (self.grid_h-self.viewablegrid_h)*self.tile_side
+            self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
+            self.viewablegrid_h_add = bool(self.viewablegrid_topleft['y']%self.tile_side)
+            self.set_tile_imgs()
+
+    def viewablegrid_shiftright(self, shift_px):
+        if self.viewablegrid_topleft['x'] < (self.grid_w-self.viewablegrid_w)*self.tile_side:
+            self.viewablegrid_topleft['x'] += shift_px
+            if self.viewablegrid_topleft['x'] > (self.grid_w-self.viewablegrid_w)*self.tile_side:
+                self.viewablegrid_topleft['x'] = (self.grid_w-self.viewablegrid_w)*self.tile_side
+            self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
+            self.viewablegrid_w_add = bool(self.viewablegrid_topleft['x']%self.tile_side)
+            self.set_tile_imgs()
+
     def get_event(self, event):
 
         if event.type == QUIT:
             self.quit = True
+            return
 
         #Shifting up and down the viewable grid
+        #Using WASD
         keyspressed = pg.key.get_pressed()
         if keyspressed[pg.K_w]:
-            if self.viewablegrid_topleft['y'] > 0:
-                self.viewablegrid_topleft['y'] -= 2
-                self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
-                self.viewablegrid_h_add = bool(self.viewablegrid_topleft['y']%self.tile_side)
-                self.set_tile_imgs()
+            self.viewablegrid_shiftup(self.viewagrid_wasd_shift_px)
 
         if keyspressed[pg.K_a]:
-            if self.viewablegrid_topleft['x'] > 0:
-                self.viewablegrid_topleft['x'] -= 2
-                self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
-                self.viewablegrid_w_add = bool(self.viewablegrid_topleft['x']%self.tile_side)
-                self.set_tile_imgs()
+            self.viewablegrid_shiftleft(self.viewagrid_wasd_shift_px)
 
         if keyspressed[pg.K_s]:
-            if self.viewablegrid_topleft['y'] < (self.grid_h-self.viewablegrid_h)*self.tile_side:
-                self.viewablegrid_topleft['y'] += 2
-                self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
-                self.viewablegrid_h_add = bool(self.viewablegrid_topleft['y']%self.tile_side)
-                self.set_tile_imgs()
+            self.viewablegrid_shiftdown(self.viewagrid_wasd_shift_px)
 
         if keyspressed[pg.K_d]:
-            if self.viewablegrid_topleft['x'] < (self.grid_w-self.viewablegrid_w)*self.tile_side:
-                self.viewablegrid_topleft['x'] += 2
-                self.persist['viewablegrid_topleft'] = self.viewablegrid_topleft
-                self.viewablegrid_w_add = bool(self.viewablegrid_topleft['x']%self.tile_side)
-                self.set_tile_imgs()
+            self.viewablegrid_shiftright(self.viewagrid_wasd_shift_px)
+
+        #Using middle click
+        mousepressed = pg.mouse.get_pressed()
+        self.mousepos = pg.mouse.get_pos()
+        if mousepressed[1]:
+            horizontal_shift = (self.mousepos[0]-self.viewablegrid_mousepos[0])/4
+            vertical_shift = (self.mousepos[1]-self.viewablegrid_mousepos[1])/4
+            if horizontal_shift < 0:
+                self.viewablegrid_shiftleft(abs(horizontal_shift))
+            else:
+                self.viewablegrid_shiftright(horizontal_shift)
+            if vertical_shift < 0:
+                self.viewablegrid_shiftup(abs(vertical_shift))
+            else:
+                self.viewablegrid_shiftdown(vertical_shift)
+        self.viewablegrid_mousepos = self.mousepos
 
         #Functionality that works around time
-        elif event.type == USEREVENT+1:
+        if event.type == USEREVENT+1:
             self.timer += 1
-            #print self.timer
             self.autosavetimer += 1
             self.persist['timer'] = self.timer
             self.persist['autosavetimer'] = self.autosavetimer
             self.grid_tilecycle_advance()
-            #print self.grid_tilecycle
             self.earnings()
             self.maintenance()
 
@@ -865,14 +906,11 @@ class Farm(Gamestate):
                     self.persist['buytile'] = self.buytile
                     self.play_sfx(self.sfx_clicked)
 
-            # middle click, drag grid around
-            #if event.button == 2:
-
             # left click, do action
             elif event.button == 1:
-                if self.sidebar_w <= event.pos[0] <= self.screen_width and 0 <= event.pos[1] <= self.btmbar_toplefty:
-                    select_col = (event.pos[0] - self.sidebar_w)/self.tile_side + self.viewablegrid_topleft['x']/self.tile_side
-                    select_row = event.pos[1]/self.tile_side + self.viewablegrid_topleft['y']/self.tile_side
+                if self.sidebar_w <= self.mousepos[0] <= self.screen_width and 0 <= self.mousepos[1] <= self.btmbar_toplefty:
+                    select_col = (self.mousepos[0]-self.sidebar_w+self.viewablegrid_topleft['x']%self.tile_side)/self.tile_side + self.viewablegrid_topleft['x']/self.tile_side
+                    select_row = (self.mousepos[1]+self.viewablegrid_topleft['y']%self.tile_side)/self.tile_side + self.viewablegrid_topleft['y']/self.tile_side
                     if not self.viewablegrid_w_add and select_col >= self.viewablegrid_topleft['x']/self.tile_side + self.viewablegrid_w:
                         select_col -= 1
                     if not self.viewablegrid_h_add and select_row >= self.viewablegrid_topleft['y']/self.tile_side + self.viewablegrid_h:
@@ -960,14 +998,14 @@ class Farm(Gamestate):
                             self.play_sfx(self.sfx_denied)
 
                 #Determines which tab of tiles to buy to show on the sidebar
-                elif self.sidebar_tilestab_topy < event.pos[1] < self.sidebar_tilestab_topy + self.sidebar_tilestab_h:
-                    if self.sidebar_tilestab_leftx1 < event.pos[0] < self.sidebar_tilestab_leftx2:
+                elif self.sidebar_tilestab_topy < self.mousepos[1] < self.sidebar_tilestab_topy + self.sidebar_tilestab_h:
+                    if self.sidebar_tilestab_leftx1 < self.mousepos[0] < self.sidebar_tilestab_leftx2:
                         if self.buytile is None and not self.select_sidebar_tilestab1:
                             self.select_sidebar_tilestab1 = True
                             self.sidebar_tilestab1txt_rect = self.sidebar_tilestab1txt.get_rect(topright=(self.sidebar_tilestab_leftx2-2*self.sidebar_highlight_borderthick, self.sidebar_tilestab_topy+self.sidebar_highlight_borderthick-self.sidebar_tilestab_yadjust))
                             self.sidebar_tilestab2txt_rect = self.sidebar_tilestab2txt.get_rect(topright=(self.sidebar_bordergfx_right_topleftx-2*self.sidebar_highlight_borderthick, self.sidebar_tilestab_topy+self.sidebar_highlight_borderthick))
                             self.play_sfx(self.sfx_clicked)
-                    elif self.sidebar_tilestab_leftx2+self.bordergfx_h < event.pos[0] < self.sidebar_bordergfx_right_topleftx:
+                    elif self.sidebar_tilestab_leftx2+self.bordergfx_h < self.mousepos[0] < self.sidebar_bordergfx_right_topleftx:
                         if self.buytile is None and self.select_sidebar_tilestab1:
                             self.select_sidebar_tilestab1 = False
                             self.sidebar_tilestab1txt_rect = self.sidebar_tilestab1txt.get_rect(topright=(self.sidebar_tilestab_leftx2-2*self.sidebar_highlight_borderthick, self.sidebar_tilestab_topy+self.sidebar_highlight_borderthick))
@@ -975,7 +1013,7 @@ class Farm(Gamestate):
                             self.play_sfx(self.sfx_clicked)
                     self.persist['select_sidebar_tilestab1'] = self.select_sidebar_tilestab1
 
-                elif self.sidebar_tiles_leftx < event.pos[0] < self.sidebar_tiles_leftx + self.sidebar_tiles_side:
+                elif self.sidebar_tiles_leftx < self.mousepos[0] < self.sidebar_tiles_leftx + self.sidebar_tiles_side:
                     if self.buytile is None:
 
                         #Determines which tile the player has selected to buy from the sidebar
@@ -986,7 +1024,7 @@ class Farm(Gamestate):
                             select_sidebar_tilestab = self.tilestobuyb
                         for nth_tile, tile in enumerate(select_sidebar_tilestab):
                             lefty = self.sidebar_tiles_topy + nth_tile*self.sidebar_tiles_dist
-                            if lefty < event.pos[1] < lefty + self.sidebar_tiles_side:
+                            if lefty < self.mousepos[1] < lefty + self.sidebar_tiles_side:
                                 self.persist['buytile'] = tile
                                 self.next_state = 'Tile'
                                 self.done = True
@@ -994,9 +1032,9 @@ class Farm(Gamestate):
                                 self.save_background_img()
 
                 elif self.buytile is None:
-                    self.goto_tutorial(event)
-                    self.goto_options(event)
-                    self.goto_money(event)
+                    self.goto_tutorial()
+                    self.goto_options()
+                    self.goto_money()
 
         elif event.type == MOUSEMOTION:
             self.set_highlight()
@@ -1020,6 +1058,14 @@ class Farm(Gamestate):
         for row in range(self.viewablegrid_h+int(self.viewablegrid_h_add)):
             for col in range(self.viewablegrid_w+int(self.viewablegrid_w_add)):
                 surface.blit(self.tile_imgs[row][col], (self.sidebar_w+col*self.tile_side-self.viewablegrid_topleft['x']%self.tile_side, row*self.tile_side-self.viewablegrid_topleft['y']%self.tile_side))
+
+        #Draw grid tile highlight
+        if self.tile_highlight is not None:
+            if self.tile_highlight:
+                tile_highlight_c = self.c_blue
+            elif not self.tile_highlight:
+                tile_highlight_c = self.c_red
+            pg.draw.rect(surface, tile_highlight_c, (self.tile_highlight_x, self.tile_highlight_y, self.tile_side, self.tile_side), self.tile_highlight_borderthick)
 
         #Draw background for sidebar and bottom bar
         img = pg.transform.scale(self.tiles['Dirt0'].img0, (self.background_dirt0_tiles_side, self.background_dirt0_tiles_side))
@@ -1091,14 +1137,6 @@ class Farm(Gamestate):
         surface.blit(self.displaydatetxt, self.displaydatetxt_rect)
         surface.blit(self.tutorial_btntxt, self.tutorial_btntxt_rect)
         surface.blit(self.options_btnimg, self.options_btnimg_rect)
-
-        #Draw grid tile highlight
-        if self.tile_highlight is not None:
-            if self.tile_highlight:
-                tile_highlight_c = self.c_blue
-            elif not self.tile_highlight:
-                tile_highlight_c = self.c_red
-            pg.draw.rect(surface, tile_highlight_c, (self.tile_highlight_x, self.tile_highlight_y, self.tile_side, self.tile_side), self.tile_highlight_borderthick)
 
         #Draw tile to buy highlight
         if self.sidebar_tile_highlight is not None:

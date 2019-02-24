@@ -29,7 +29,7 @@ class Cycle(object):
 
         self.autosave_cycle = 300*self.timecycle_sec_mult
 
-        self.day                   = 6*self.timecycle_sec_mult
+        self.day = 6*self.timecycle_sec_mult
 
         self.maincycle             = self.day/2
         self.maincycle_crop        = self.day/2
@@ -44,7 +44,7 @@ class Cycle(object):
         self.evolvecycle_crop      = self.day*5
         self.evolvecycle_livestock = self.day*3
         self.evolvecycle_structure = self.day*10
-        self.evolvecycle           = self.day*7 #days
+        self.evolvecycle           = self.day*7
 
         self.year_normcycle = 365
         self.year_leapcycle = 366

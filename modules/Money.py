@@ -48,6 +48,8 @@ class Money(Gamestate):
 
         self.thisday_earnings = self.persist['thisday_earnings']
         self.thisday_maintenance = self.persist['thisday_maintenance']
+        print str(self.thisday_earnings)
+        print str(self.thisday_maintenance)
 
         self.set_display_profit(self.thisday_earnings, self.thisday_maintenance)
 
