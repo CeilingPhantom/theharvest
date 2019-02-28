@@ -1,3 +1,5 @@
 savefile
 modules/*.pyc
 resources/temp/background.png
+*.sublime-project
+*.sublime-workspace
