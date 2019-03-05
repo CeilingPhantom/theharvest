@@ -7,7 +7,8 @@ To run:
 clone (or download) this repo into your machine, anywhere you like
 ensure you have python2 (python2.7.9 or higher) installed on your machine
 open up your terminal (or PowerShell on Windows) and type:
-
-`pip install pygame`
-`cd where/repo/is/cloned/theharvest/`
-`python TheHarvest.py`
+```
+pip install pygame
+cd where/repo/is/cloned/theharvest/
+python TheHarvest.py
+```
