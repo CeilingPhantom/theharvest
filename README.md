@@ -10,5 +10,5 @@ open up your terminal (or PowerShell on Windows) and type:
 ```
 pip install pygame
 cd where/repo/is/cloned/theharvest/
-python TheHarvest.py
+python theharvest.py
 ```
