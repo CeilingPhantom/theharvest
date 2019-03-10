@@ -662,7 +662,7 @@ class Farm(Gamestate):
                 elif self.tiles[self.grid[row][col]].tiletype == 'Livestock':
                     earncycle = self.cycle.earncycle_livestock
                 if earncycle:
-                    if self.grid_tilecycle[row][col]%earncycle < self.timer%self.cycle.day:
+                    if self.grid_tilecycle[row][col]%earncycle <= self.timer%self.cycle.day:
                         earnings = self.calc_tile_earnings(row, col)
                         self.persist['thisday_earnings'] += earnings
                     if self.grid_tilecycle[row][col]%earncycle == 0:
@@ -707,7 +707,7 @@ class Farm(Gamestate):
                 elif self.tiles[self.grid[row][col]].tiletype == 'Structure':
                     maincycle = self.cycle.maincycle_structure
                 if maincycle:
-                    if self.grid_tilecycle[row][col]%maincycle < self.timer%self.cycle.day:
+                    if self.grid_tilecycle[row][col]%maincycle <= self.timer%self.cycle.day:
                         maintenance = self.calc_tile_maintenance(row, col)
                         self.persist['thisday_maintenance'] += maintenance
                     if self.grid_tilecycle[row][col]%maincycle == 0:
@@ -722,7 +722,7 @@ class Farm(Gamestate):
             elif self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Structure':
                 plow_maincycle = self.cycle.maincycle_structure
             if plow_maincycle:
-                if self.grid_tilecycle[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]]%plow_maincycle < self.timer%self.cycle.day:
+                if self.grid_tilecycle[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]]%plow_maincycle <= self.timer%self.cycle.day:
                     maintenance = self.calc_plowingtile_maintenance(plowingtile)
                     self.persist['thisday_maintenance'] += maintenance
                 if self.grid_tilecycle[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]]%plow_maincycle == 0:
