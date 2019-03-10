@@ -6,7 +6,7 @@ Manages the Tile screen
 import os
 import pygame as pg
 from pygame.locals import *
-from modules.Gamestate import Gamestate
+from modules.gamestate import Gamestate
 
 class Tile(Gamestate):
     def __init__(self):
@@ -123,25 +123,31 @@ class Tile(Gamestate):
             else:
                 for self.plowingtile in self.plowingtiles_dict.keys():
                     if self.plowingtiles_dict[self.plowingtile][1] == self.select_row and self.plowingtiles_dict[self.plowingtile][2] == self.select_col:
-                        self.tile = self.plowingtiles_dict[self.plowingtile][0]
-                        #Set title
-                        self.title = self.tiles[self.tile].displayname
-                        #Set subtitle
-                        if len(self.tiles[self.grid[self.select_row][self.select_col]].displayname+' --> '+self.title) > 26:
-                            self.subtitle = self.font_ibody3.render(self.tiles[self.grid[self.select_row][self.select_col]].displayname+' --> '+self.title, True, self.c_black)
-                        else:
-                            self.subtitle = self.font_ibody2.render(self.tiles[self.grid[self.select_row][self.select_col]].displayname+' --> '+self.title, True, self.c_black)
-                        self.subtitle_rect = self.subtitle.get_rect(midleft=(self.titleflavor_x, self.title_rect_centery-2*self.ydist/5))
-                        #Set img
-                        self.img = self.tiles[self.grid[self.select_row][self.select_col]].img0.convert()
-                        #Set flavor text
-                        self.flavortxta = self.tiles[self.grid[self.select_row][self.select_col]].flavora
-                        self.flavortxtb = self.tiles[self.grid[self.select_row][self.select_col]].flavorb
-                        #Set season text
-                        self.seasontxt = self.tiles[self.tile].season
-                        #Set remove price
-                        self.removep = self.tiles[self.grid[self.select_row][self.select_col]].sellprice
                         break
+                self.tile = self.plowingtiles_dict[self.plowingtile][0]
+                #Set title
+                self.title = self.tiles[self.tile].displayname
+                #Set subtitle
+                if self.tiles[self.plowingtiles_dict[self.plowingtile][0]].tiletype == 'Crop' and self.grid[self.select_row][self.select_col] == 'Dirt0':
+                    self.subtitle = self.tiles['Field0'].displayname
+                elif (self.tiles[self.plowingtiles_dict[self.plowingtile][0]].tiletype == 'Livestock' or self.tiles[self.plowingtiles_dict[self.plowingtile][0]].tiletype == 'Structure') and self.grid[self.select_row][self.select_col] == 'Dirt0':
+                    self.subtitle = self.tiles['Construct0'].displayname
+                else:
+                    self.subtitle = self.title
+                if len(self.tiles[self.grid[self.select_row][self.select_col]].displayname+' --> '+self.subtitle) > 26:
+                    self.subtitle = self.font_ibody3.render(self.tiles[self.grid[self.select_row][self.select_col]].displayname+' --> '+self.subtitle, True, self.c_black)
+                else:
+                    self.subtitle = self.font_ibody2.render(self.tiles[self.grid[self.select_row][self.select_col]].displayname+' --> '+self.subtitle, True, self.c_black)
+                self.subtitle_rect = self.subtitle.get_rect(midleft=(self.titleflavor_x, self.title_rect_centery-2*self.ydist/5))
+                #Set img
+                self.img = self.tiles[self.grid[self.select_row][self.select_col]].img0.convert()
+                #Set flavor text
+                self.flavortxta = self.tiles[self.grid[self.select_row][self.select_col]].flavora
+                self.flavortxtb = self.tiles[self.grid[self.select_row][self.select_col]].flavorb
+                #Set season text
+                self.seasontxt = self.tiles[self.tile].season
+                #Set remove price
+                self.removep = self.tiles[self.grid[self.select_row][self.select_col]].sellprice
         else:
             self.tile = self.buytile
             #Set title
@@ -384,7 +390,7 @@ class Tile(Gamestate):
         self.grid[self.select_row][self.select_col] = 'Dirt0'
         self.money -= self.removep
         self.plowingtile_counter += 1
-        self.grid_tilecycle[row][col] = 0
+        self.grid_tilecycle[self.select_row][self.select_col] = 0
         self.persist['grid'] = self.grid
         self.persist['total_money_spent'] += self.removep
         self.persist['money'] = self.money

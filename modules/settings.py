@@ -6,7 +6,7 @@ Manages the Settings screen
 import os
 import pygame as pg
 from pygame.locals import *
-from modules.Gamestate import Gamestate
+from modules.gamestate import Gamestate
 
 class Settings(Gamestate):
     def __init__(self):

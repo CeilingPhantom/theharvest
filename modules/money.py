@@ -2,13 +2,13 @@
 Manages the Money screen
 '''
 
-# show (general and this turn's) total maintenance, total earnings and gross profit
+# show (avg and this turn's) total maintenance, total earnings and gross profit
 # show total number of each crop, livestock, structure on farm
 
 import os
 import pygame as pg
 from pygame.locals import *
-from modules.Gamestate import Gamestate
+from modules.gamestate import Gamestate
 
 class Money(Gamestate):
     def __init__(self):
@@ -29,7 +29,7 @@ class Money(Gamestate):
                                         self.thisdaytxt_rect_centery+3*self.statinfo_ydist
                                         )
 
-        self.generaltxt_rect_centery = (self.thisdaytxt_rect_centery[2]+2*self.statinfo_ydist+self.statinfo_ydist/3,
+        self.avgtxt_rect_centery = (self.thisdaytxt_rect_centery[2]+2*self.statinfo_ydist+self.statinfo_ydist/3,
                                         self.thisdaytxt_rect_centery[2]+3*self.statinfo_ydist+self.statinfo_ydist/3,
                                         self.thisdaytxt_rect_centery[2]+4*self.statinfo_ydist+self.statinfo_ydist/3,
                                         self.thisdaytxt_rect_centery[2]+5*self.statinfo_ydist+self.statinfo_ydist/3,
@@ -65,21 +65,21 @@ class Money(Gamestate):
                                 self.thisdaytxt[3].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.thisdaytxt_rect_centery[3]))
                                )
 
-        general_earnings_maintenance = self.calc_general_earnings_maintenance()
-        self.set_display_profit(general_earnings_maintenance[0], general_earnings_maintenance[1])
+        avg_earnings_maintenance = self.calc_avg_earnings_maintenance()
+        self.set_display_profit(avg_earnings_maintenance[0], avg_earnings_maintenance[1])
 
-        self.generaltxt = (self.font_body.render('In General', True, self.c_black),
+        self.avgtxt = (self.font_body.render('Avg per Day', True, self.c_black),
                            self.font_body.render('(All Tiles)', True, self.c_black),
-                           self.font_body2.render('Earnings: $'+str(general_earnings_maintenance[0]), True, self.c_black),
-                           self.font_body2.render('Maint.:  -$'+str(general_earnings_maintenance[1]), True, self.c_black),
+                           self.font_body2.render('Earnings: $'+str(avg_earnings_maintenance[0]), True, self.c_black),
+                           self.font_body2.render('Maint.:  -$'+str(avg_earnings_maintenance[1]), True, self.c_black),
                            self.font_body2.render('Profit:  '+self.profit_sign+str(self.profit), True, self.profittxt_color)
                           )
 
-        self.generaltxt_rect = (self.generaltxt[0].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.generaltxt_rect_centery[0])),
-                                self.generaltxt[1].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.generaltxt_rect_centery[1])),
-                                self.generaltxt[2].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.generaltxt_rect_centery[2])),
-                                self.generaltxt[3].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.generaltxt_rect_centery[3])),
-                                self.generaltxt[4].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.generaltxt_rect_centery[4]))
+        self.avgtxt_rect = (self.avgtxt[0].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.avgtxt_rect_centery[0])),
+                                self.avgtxt[1].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.avgtxt_rect_centery[1])),
+                                self.avgtxt[2].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.avgtxt_rect_centery[2])),
+                                self.avgtxt[3].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.avgtxt_rect_centery[3])),
+                                self.avgtxt[4].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.avgtxt_rect_centery[4]))
                                )
 
         self.background_img = pg.image.load(os.path.join('resources/temp', 'background.png')).convert()
@@ -90,15 +90,18 @@ class Money(Gamestate):
             self.profit_sign = '-$'
             self.profit = abs(self.profit)
             self.profittxt_color = self.c_red
+        else:
+            self.profit_sign = ' $'
+            self.profittxt_color = self.c_black
 
-    def calc_general_earnings_maintenance(self):
-        general_earnings = 0
-        general_maintenance = 0
+    def calc_avg_earnings_maintenance(self):
+        avg_earnings = 0
+        avg_maintenance = 0
         for row in range(self.grid_h):
             for col in range(self.grid_w):
-                general_earnings += self.tiles[self.grid[row][col]].earnings
-                general_maintenance += self.tiles[self.grid[row][col]].maintenance
-        return (general_earnings, general_maintenance)
+                avg_earnings += self.tiles[self.grid[row][col]].earnings
+                avg_maintenance += self.tiles[self.grid[row][col]].maintenance
+        return (avg_earnings, avg_maintenance)
 
     def get_event(self, event):
         if event.type == QUIT:
@@ -129,8 +132,8 @@ class Money(Gamestate):
         surface.blit(self.thisdaytxt[1], self.thisdaytxt_rect[1])
         surface.blit(self.thisdaytxt[2], self.thisdaytxt_rect[2])
         surface.blit(self.thisdaytxt[3], self.thisdaytxt_rect[3])
-        surface.blit(self.generaltxt[0], self.generaltxt_rect[0])
-        surface.blit(self.generaltxt[1], self.generaltxt_rect[1])
-        surface.blit(self.generaltxt[2], self.generaltxt_rect[2])
-        surface.blit(self.generaltxt[3], self.generaltxt_rect[3])
-        surface.blit(self.generaltxt[4], self.generaltxt_rect[4])
+        surface.blit(self.avgtxt[0], self.avgtxt_rect[0])
+        surface.blit(self.avgtxt[1], self.avgtxt_rect[1])
+        surface.blit(self.avgtxt[2], self.avgtxt_rect[2])
+        surface.blit(self.avgtxt[3], self.avgtxt_rect[3])
+        surface.blit(self.avgtxt[4], self.avgtxt_rect[4])

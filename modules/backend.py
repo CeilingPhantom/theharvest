@@ -31,13 +31,11 @@ class Cycle(object):
 
         self.day = 6*self.timecycle_sec_mult
 
-        self.maincycle             = self.day/2
-        self.maincycle_crop        = self.day/2
+        self.maincycle_crop        = self.day
         self.maincycle_livestock   = self.day
         self.maincycle_structure   = self.day*5
 
-        self.earncycle             = self.day*10
-        self.earncycle_crop        = self.day*5
+        self.earncycle_crop        = self.day*10
         self.earncycle_livestock   = self.day*20
 
         self.evolvecycle_grass     = self.day*2

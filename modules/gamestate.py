@@ -8,8 +8,8 @@ import base64
 from random import randrange
 import pygame as pg
 from pygame.locals import *
-import modules.Backend as be
-from modules.Display import display
+import modules.backend as be
+from modules.display import display
 
 class Gamestate(object):
     '''

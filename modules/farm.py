@@ -5,7 +5,7 @@ Manages the Farm screen
 #Import needed modules
 import pygame as pg
 from pygame.locals import *
-from modules.Gamestate import Gamestate
+from modules.gamestate import Gamestate
 
 class Farm(Gamestate):
     def __init__(self):
@@ -637,11 +637,23 @@ class Farm(Gamestate):
                 self.grid_tilecycle[row][col] += 1
         self.grid_tilecycle = self.persist['grid_tilecycle']
 
+    def calc_tile_earnings(self, row, col):
+        '''
+        Calculate earnings for a single tile
+        '''
+        earnings = float(self.tiles[self.grid[row][col]].earnings)
+        if self.greenhouse_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Crop':
+            earnings = float(earnings)*(1.0+self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[row][col])
+        elif self.silo_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Livestock':
+            earnings = float(earnings)*(1.0+self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[row][col])
+        return earnings
+
     def calc_earnings(self):
         '''
-        Calculate earnings as of current second
+        Calculate earnings as of current tick and day
         '''
-        thisday_earnings = 0.0
+        total_earnings = 0.0
+        self.persist['thisday_earnings'] = 0.0
         for row in range(self.grid_h):
             for col in range(self.grid_w):
                 earncycle = 0
@@ -650,21 +662,41 @@ class Farm(Gamestate):
                 elif self.tiles[self.grid[row][col]].tiletype == 'Livestock':
                     earncycle = self.cycle.earncycle_livestock
                 if earncycle:
+                    if self.grid_tilecycle[row][col]%earncycle < self.timer%self.cycle.day:
+                        earnings = self.calc_tile_earnings(row, col)
+                        self.persist['thisday_earnings'] += earnings
                     if self.grid_tilecycle[row][col]%earncycle == 0:
-                        earnings = float(self.tiles[self.grid[row][col]].earnings)
-                        if self.greenhouse_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Crop':
-                            earnings = float(earnings)*(1.0+self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[row][col])
-                        elif self.silo_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Livestock':
-                            earnings = float(earnings)*(1.0+self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[row][col])
-                        thisday_earnings += earnings
-        self.persist['thisday_earnings'] = thisday_earnings
-        return thisday_earnings
+                        total_earnings += earnings
+        return total_earnings
+
+    def calc_tile_maintenance(self, row, col):
+        '''
+        Calculate maintenance for a single tile
+        '''
+        maintenance = self.tiles[self.grid[row][col]].maintenance
+        if self.greenhouse_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Crop':
+            maintenance = float(maintenance)*(1.0-self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[row][col])
+        elif self.silo_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Livestock':
+            maintenance = float(maintenance)*(1.0-self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[row][col])
+        return maintenance
+
+    def calc_plowingtile_maintenance(self, plowingtile):
+        '''
+        Calculate maintenance for a single tile that is in development
+        '''
+        maintenance = self.tiles[self.plowingtiles_dict[plowingtile][0]].maintenance
+        if self.greenhouse_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]] and self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Crop':
+            maintenance = float(maintenance)*(1.0-self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]])
+        elif self.silo_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]] and self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Livestock':
+            maintenance = float(maintenance)*(1.0-self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]])
+        return maintenance
 
     def calc_maintenance(self):
         '''
-        Calculate maintenance as of current second
+        Calculate maintenance as of current tick and day
         '''
-        thisday_maintenance = 0.0
+        total_maintenance = 0.0
+        self.persist['thisday_maintenance'] = 0.0
         for row in range(self.grid_h):
             for col in range(self.grid_w):
                 maincycle = 0
@@ -675,13 +707,11 @@ class Farm(Gamestate):
                 elif self.tiles[self.grid[row][col]].tiletype == 'Structure':
                     maincycle = self.cycle.maincycle_structure
                 if maincycle:
+                    if self.grid_tilecycle[row][col]%maincycle < self.timer%self.cycle.day:
+                        maintenance = self.calc_tile_maintenance(row, col)
+                        self.persist['thisday_maintenance'] += maintenance
                     if self.grid_tilecycle[row][col]%maincycle == 0:
-                        maintenance = self.tiles[self.grid[row][col]].maintenance
-                        if self.greenhouse_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Crop':
-                            maintenance = float(maintenance)*(1.0-self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[row][col])
-                        elif self.silo_affectedtiles_lvl3[row][col] and self.tiles[self.grid[row][col]].tiletype == 'Livestock':
-                            maintenance = float(maintenance)*(1.0-self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[row][col])
-                        thisday_maintenance += maintenance
+                        total_maintenance += maintenance
 
         for plowingtile in self.plowingtiles_dict.keys():
             plow_maincycle = 0
@@ -692,29 +722,26 @@ class Farm(Gamestate):
             elif self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Structure':
                 plow_maincycle = self.cycle.maincycle_structure
             if plow_maincycle:
+                if self.grid_tilecycle[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]]%plow_maincycle < self.timer%self.cycle.day:
+                    maintenance = self.calc_plowingtile_maintenance(plowingtile)
+                    self.persist['thisday_maintenance'] += maintenance
                 if self.grid_tilecycle[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]]%plow_maincycle == 0:
-                    maintenance = self.tiles[self.plowingtiles_dict[plowingtile][0]].maintenance
-                    if self.greenhouse_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]] and self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Crop':
-                        maintenance = float(maintenance)*(1.0-self.structures['Greenhouse3'].lvl3_aoe_upg)**float(self.greenhouse_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]])
-                    elif self.silo_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]] and self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Livestock':
-                        maintenance = float(maintenance)*(1.0-self.structures['Silo3'].lvl3_aoe_upg)**float(self.silo_affectedtiles_lvl3[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]])
-                    thisday_maintenance += maintenance
-        self.persist['thisday_maintenance'] = thisday_maintenance
-        return thisday_maintenance
+                    total_maintenance += maintenance
+        return total_maintenance
 
     def earnings(self):
-        thisday_earnings = self.calc_earnings()
-        #print thisday_earnings
-        self.money += thisday_earnings
-        self.persist['total_money_earned'] += thisday_earnings
+        earnings = self.calc_earnings()
+        #print earnings
+        self.money += earnings
+        self.persist['total_money_earned'] += earnings
         self.persist['money'] = self.money
         self.set_total_money_highest_lowest()
 
     def maintenance(self):
-        thisday_maintenance = self.calc_maintenance()
-        #print thisday_maintenance
-        self.money -= thisday_maintenance
-        self.persist['total_money_spent'] += thisday_maintenance
+        maintenance = self.calc_maintenance()
+        #print maintenance
+        self.money -= maintenance
+        self.persist['total_money_spent'] += maintenance
         self.persist['money'] = self.money
         self.set_total_money_highest_lowest()
 

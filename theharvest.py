@@ -29,18 +29,18 @@ from pygame.locals import *
 
 #Set icon and display
 pg.display.set_icon(pg.image.load(os.path.join('resources/imgs/tiles', 'wheat1_0.png')))
-from modules.Display import display
+from modules.display import display
 
 #Import screens
-from modules.Mainmenu import Mainmenu
-from modules.Farm import Farm
-from modules.Tile import Tile
-from modules.Options import Options
-from modules.Settings import Settings
-from modules.Stats import Stats
-from modules.Info import Info
-from modules.Tutorial import Tutorial
-from modules.Money import Money
+from modules.mainmenu import Mainmenu
+from modules.farm import Farm
+from modules.tile import Tile
+from modules.options import Options
+from modules.settings import Settings
+from modules.stats import Stats
+from modules.info import Info
+from modules.tutorial import Tutorial
+from modules.money import Money
 
 class Game(object):
     '''

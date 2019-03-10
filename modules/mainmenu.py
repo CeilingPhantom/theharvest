@@ -7,8 +7,8 @@ Also initialises variables
 #Import needed modules
 import pygame as pg
 from pygame.locals import *
-import modules.Backend as be
-from modules.Gamestate import Gamestate
+import modules.backend as be
+from modules.gamestate import Gamestate
 
 class Mainmenu(Gamestate):
     def __init__(self):
