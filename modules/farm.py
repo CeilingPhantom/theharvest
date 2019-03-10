@@ -456,13 +456,13 @@ class Farm(Gamestate):
             select_col = self.plowingtiles_dict[plowingtile][2]
             evolvecycle = 0
             if self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Crop':
-                evolvecycle = self.cycle.evolvecycle_crop
+                evolvecycle = self.cycle.evolvecycle['Crop']
             elif self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Livestock':
-                evolvecycle = self.cycle.evolvecycle_livestock
+                evolvecycle = self.cycle.evolvecycle['Livestock']
             elif self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Structure':
-                evolvecycle = self.cycle.evolvecycle_structure
+                evolvecycle = self.cycle.evolvecycle['Structure']
             elif self.plowingtiles_dict[plowingtile][0] == 'Grass0':
-                evolvecycle = self.cycle.evolvecycle_grass
+                evolvecycle = self.cycle.evolvecycle['Grass']
             if self.grid_tilecycle[select_row][select_col]%evolvecycle == 0:
                 if self.plowingtiles_dict[plowingtile][0] == 'Grass0' or self.plowingtiles_dict[plowingtile][3] == 1 or self.shed_tiles_reduced_plow[select_row][select_col]:
                     self.grid[select_row][select_col] = self.plowingtiles_dict[plowingtile][0] #tile name
@@ -658,9 +658,9 @@ class Farm(Gamestate):
             for col in range(self.grid_w):
                 earncycle = 0
                 if self.tiles[self.grid[row][col]].tiletype == 'Crop':
-                    earncycle = self.cycle.earncycle_crop
+                    earncycle = self.cycle.earncycle['Crop']
                 elif self.tiles[self.grid[row][col]].tiletype == 'Livestock':
-                    earncycle = self.cycle.earncycle_livestock
+                    earncycle = self.cycle.earncycle['Livestock']
                 if earncycle:
                     if self.grid_tilecycle[row][col]%earncycle <= self.timer%self.cycle.day:
                         earnings = self.calc_tile_earnings(row, col)
@@ -701,11 +701,11 @@ class Farm(Gamestate):
             for col in range(self.grid_w):
                 maincycle = 0
                 if self.tiles[self.grid[row][col]].tiletype == 'Crop':
-                    maincycle = self.cycle.maincycle_crop
+                    maincycle = self.cycle.maincycle['Crop']
                 elif self.tiles[self.grid[row][col]].tiletype == 'Livestock':
-                    maincycle = self.cycle.maincycle_livestock
+                    maincycle = self.cycle.maincycle['Livestock']
                 elif self.tiles[self.grid[row][col]].tiletype == 'Structure':
-                    maincycle = self.cycle.maincycle_structure
+                    maincycle = self.cycle.maincycle['Structure']
                 if maincycle:
                     if self.grid_tilecycle[row][col]%maincycle <= self.timer%self.cycle.day:
                         maintenance = self.calc_tile_maintenance(row, col)
@@ -716,11 +716,11 @@ class Farm(Gamestate):
         for plowingtile in self.plowingtiles_dict.keys():
             plow_maincycle = 0
             if self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Crop':
-                plow_maincycle = self.cycle.maincycle_crop
+                plow_maincycle = self.cycle.maincycle['Crop']
             elif self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Livestock':
-                plow_maincycle = self.cycle.maincycle_livestock
+                plow_maincycle = self.cycle.maincycle['Livestock']
             elif self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype == 'Structure':
-                plow_maincycle = self.cycle.maincycle_structure
+                plow_maincycle = self.cycle.maincycle['Structure']
             if plow_maincycle:
                 if self.grid_tilecycle[self.plowingtiles_dict[plowingtile][1]][self.plowingtiles_dict[plowingtile][2]]%plow_maincycle <= self.timer%self.cycle.day:
                     maintenance = self.calc_plowingtile_maintenance(plowingtile)

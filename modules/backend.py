@@ -31,18 +31,20 @@ class Cycle(object):
 
         self.day = 6*self.timecycle_sec_mult
 
-        self.maincycle_crop        = self.day
-        self.maincycle_livestock   = self.day
-        self.maincycle_structure   = self.day*5
+        self.maincycle = {'Crop':       self.day,
+                          'Livestock':  self.day,
+                          'Structure':  self.day*5
+                         }
 
-        self.earncycle_crop        = self.day*10
-        self.earncycle_livestock   = self.day*20
+        self.earncycle = {'Crop':       self.day*10,
+                          'Livestock':  self.day*20
+                         }
 
-        self.evolvecycle_grass     = self.day*2
-        self.evolvecycle_crop      = self.day*5
-        self.evolvecycle_livestock = self.day*3
-        self.evolvecycle_structure = self.day*10
-        self.evolvecycle           = self.day*7
+        self.evolvecycle = {'Grass':        self.day*2,
+                            'Crop':         self.day*5,
+                            'Livestock':    self.day*3,
+                            'Structure':    self.day*10
+                           }
 
         self.year_normcycle = 365
         self.year_leapcycle = 366
@@ -177,107 +179,107 @@ class Tile(object):
 
 
 #The types of Tiles
-Grass0      = Tile("Grass0",      "Grass",             "None",      "All",    "grass0_0.png",       "grass0_1.png",
-                   "grass0_0.png", "grass0_2.png", 0, 0, 0, 0)
+Grass0      = Tile('Grass0',      'Grass',             'None',      'All',    'grass0_0.png',       'grass0_1.png',
+                   'grass0_0.png', 'grass0_2.png', 0, 0, 0, 0)
 
-Dirt0       = Tile("Dirt0",       "Dirt",              "None",      "All",    "dirt0.png",          "dirt0.png",
-                   "dirt0.png", "dirt0.png", 0, 0, 0, 0)
+Dirt0       = Tile('Dirt0',       'Dirt',              'None',      'All',    'dirt0.png',          'dirt0.png',
+                   'dirt0.png', 'dirt0.png', 0, 0, 0, 0)
 
-Field0      = Tile("Field0",      "Plowed Field",      "None",      "All",    "field0.png",         "field0.png",
-                   "field0.png", "field0.png", 0, 50, 0, 0)
+Field0      = Tile('Field0',      'Plowed Field',      'None',      'All',    'field0.png',         'field0.png',
+                   'field0.png', 'field0.png', 0, 50, 0, 0)
 
-Construct0  = Tile("Construct0",  "Construction Site", "None",      "All",    "construct0.png",     "construct0.png",
-                   "construct0.png", "construct0.png", 0, 200, 0, 0)
+Construct0  = Tile('Construct0',  'Construction Site', 'None',      'All',    'construct0.png',     'construct0.png',
+                   'construct0.png', 'construct0.png', 0, 200, 0, 0)
 
-Wheat1      = Tile("Wheat1",      "Wheat",             "Crop",      "All",    "wheat1_0.png",       "wheat1_1.png",
-                   "wheat1_0.png", "wheat1_2.png", 200, 100, 20, 1)
+Wheat1      = Tile('Wheat1',      'Wheat',             'Crop',      'All',    'wheat1_0.png',       'wheat1_1.png',
+                   'wheat1_0.png', 'wheat1_2.png', 200, 100, 20, 1)
 
-Wheat2      = Tile("Wheat2",      "Wheat",             "Crop",      "All",    "wheat2_0.png",       "wheat2_1.png",
-                   "wheat2_0.png", "wheat2_2.png", 100, 125, 40, 2)
+Wheat2      = Tile('Wheat2',      'Wheat',             'Crop',      'All',    'wheat2_0.png',       'wheat2_1.png',
+                   'wheat2_0.png', 'wheat2_2.png', 100, 125, 40, 2)
 
-Wheat3      = Tile("Wheat3",      "Wheat",             "Crop",      "All",    "wheat3_0.png",       "wheat3_1.png",
-                   "wheat3_0.png", "wheat3_2.png", 100, 150, 60, 3)
+Wheat3      = Tile('Wheat3',      'Wheat',             'Crop',      'All',    'wheat3_0.png',       'wheat3_1.png',
+                   'wheat3_0.png', 'wheat3_2.png', 100, 150, 60, 3)
 
-Blueberry1  = Tile("Blueberry1",  "Blueberry",         "Crop",      "Summer", "blueberry1_0.png",   "blueberry1_1.png",
-                   "blueberry1_0.png", "blueberry1_2.png", 300, 100, 25, 1)
+Blueberry1  = Tile('Blueberry1',  'Blueberry',         'Crop',      'Summer', 'blueberry1_0.png',   'blueberry1_1.png',
+                   'blueberry1_0.png', 'blueberry1_2.png', 300, 100, 25, 1)
 
-Blueberry2  = Tile("Blueberry2",  "Blueberry",         "Crop",      "Summer", "blueberry2_0.png",   "blueberry2_1.png",
-                   "blueberry2_0.png", "blueberry2_2.png", 120, 125, 50, 2)
+Blueberry2  = Tile('Blueberry2',  'Blueberry',         'Crop',      'Summer', 'blueberry2_0.png',   'blueberry2_1.png',
+                   'blueberry2_0.png', 'blueberry2_2.png', 120, 125, 50, 2)
 
-Blueberry3  = Tile("Blueberry3",  "Blueberry",         "Crop",      "Summer", "blueberry2_0.png",   "blueberry2_1.png",
-                   "blueberry2_0.png", "blueberry2_2.png", 120, 150, 75, 3)
+Blueberry3  = Tile('Blueberry3',  'Blueberry',         'Crop',      'Summer', 'blueberry2_0.png',   'blueberry2_1.png',
+                   'blueberry2_0.png', 'blueberry2_2.png', 120, 150, 75, 3)
 
-Carrot1     = Tile("Carrot1",     "Carrot",            "Crop",      "Autumn", "carrot1_0.png",      "carrot1_1.png",
-                   "carrot1_0.png", "carrot1_2.png", 300, 100, 25, 1)
+Carrot1     = Tile('Carrot1',     'Carrot',            'Crop',      'Autumn', 'carrot1_0.png',      'carrot1_1.png',
+                   'carrot1_0.png', 'carrot1_2.png', 300, 100, 25, 1)
 
-Carrot2     = Tile("Carrot2",     "Carrot",            "Crop",      "Autumn", "carrot2_0.png",      "carrot2_1.png",
-                   "carrot2_0.png", "carrot2_2.png", 120, 125, 50, 2)
+Carrot2     = Tile('Carrot2',     'Carrot',            'Crop',      'Autumn', 'carrot2_0.png',      'carrot2_1.png',
+                   'carrot2_0.png', 'carrot2_2.png', 120, 125, 50, 2)
 
-Carrot3     = Tile("Carrot3",     "Carrot",            "Crop",      "Autumn", "carrot3_0.png",      "carrot3_1.png",
-                   "carrot3_0.png", "carrot3_2.png", 120, 150, 75, 3)
+Carrot3     = Tile('Carrot3',     'Carrot',            'Crop',      'Autumn', 'carrot3_0.png',      'carrot3_1.png',
+                   'carrot3_0.png', 'carrot3_2.png', 120, 150, 75, 3)
 
-Potato1     = Tile("Potato1",     "Potato",            "Crop",      "Winter", "potato1_0.png",      "potato1_1.png",
-                   "potato1_0.png", "potato1_2.png", 300, 100, 25, 1)
+Potato1     = Tile('Potato1',     'Potato',            'Crop',      'Winter', 'potato1_0.png',      'potato1_1.png',
+                   'potato1_0.png', 'potato1_2.png', 300, 100, 25, 1)
 
-Potato2     = Tile("Potato2",     "Potato",            "Crop",      "Winter", "potato2_0.png",      "potato2_1.png",
-                   "potato2_0.png", "potato2_2.png", 120, 125, 50, 2)
+Potato2     = Tile('Potato2',     'Potato',            'Crop',      'Winter', 'potato2_0.png',      'potato2_1.png',
+                   'potato2_0.png', 'potato2_2.png', 120, 125, 50, 2)
 
-Potato3     = Tile("Potato3",     "Potato",            "Crop",      "Winter", "potato3_0.png",      "potato3_1.png",
-                   "potato3_0.png", "potato3_2.png", 120, 150, 75, 3)
+Potato3     = Tile('Potato3',     'Potato',            'Crop',      'Winter', 'potato3_0.png',      'potato3_1.png',
+                   'potato3_0.png', 'potato3_2.png', 120, 150, 75, 3)
 
-Strawberry1 = Tile("Strawberry1", "Strawberry",        "Crop",      "Spring", "strawberry1_0.png",  "strawberry1_1.png",
-                   "strawberry1_0.png", "strawberry1_2.png", 300, 100, 25, 1)
+Strawberry1 = Tile('Strawberry1', 'Strawberry',        'Crop',      'Spring', 'strawberry1_0.png',  'strawberry1_1.png',
+                   'strawberry1_0.png', 'strawberry1_2.png', 300, 100, 25, 1)
 
-Strawberry2 = Tile("Strawberry2", "Strawberry",        "Crop",      "Spring", "strawberry2_0.png",  "strawberry2_1.png",
-                   "strawberry2_0.png", "strawberry2_2.png", 120, 125, 50, 2)
+Strawberry2 = Tile('Strawberry2', 'Strawberry',        'Crop',      'Spring', 'strawberry2_0.png',  'strawberry2_1.png',
+                   'strawberry2_0.png', 'strawberry2_2.png', 120, 125, 50, 2)
 
-Strawberry3 = Tile("Strawberry3", "Strawberry",        "Crop",      "Spring", "strawberry3_0.png",  "strawberry3_1.png",
-                   "strawberry3_0.png", "strawberry3_2.png", 120, 150, 75, 3)
+Strawberry3 = Tile('Strawberry3', 'Strawberry',        'Crop',      'Spring', 'strawberry3_0.png',  'strawberry3_1.png',
+                   'strawberry3_0.png', 'strawberry3_2.png', 120, 150, 75, 3)
 
-Chicken1    = Tile("Chicken1",    "Chicken Coop",      "Livestock", "All",    "chickencoop1_0.png", "chickencoop1_1.png",
-                   "chickencoop1_2.png", "chickencoop1_3.png", 2000, 500, 300, 15)
+Chicken1    = Tile('Chicken1',    'Chicken Coop',      'Livestock', 'All',    'chickencoop1_0.png', 'chickencoop1_1.png',
+                   'chickencoop1_2.png', 'chickencoop1_3.png', 2000, 500, 300, 15)
 
-Chicken2    = Tile("Chicken2",    "Chicken Coop",      "Livestock", "All",    "chickencoop2_0.png", "chickencoop2_1.png",
-                   "chickencoop2_2.png", "chickencoop2_3.png", 1000, 600, 400, 20)
+Chicken2    = Tile('Chicken2',    'Chicken Coop',      'Livestock', 'All',    'chickencoop2_0.png', 'chickencoop2_1.png',
+                   'chickencoop2_2.png', 'chickencoop2_3.png', 1000, 600, 400, 20)
 
-Chicken3    = Tile("Chicken3",    "Chicken Coop",      "Livestock", "All",    "chickencoop3_0.png", "chickencoop3_1.png",
-                   "chickencoop3_2.png", "chickencoop3_3.png", 1000, 700, 500, 25)
+Chicken3    = Tile('Chicken3',    'Chicken Coop',      'Livestock', 'All',    'chickencoop3_0.png', 'chickencoop3_1.png',
+                   'chickencoop3_2.png', 'chickencoop3_3.png', 1000, 700, 500, 25)
 
-Pig1        = Tile("Pig1",        "Pig Pen",           "Livestock", "All",    "pigpen1_0.png",      "pigpen1_1.png",
-                   "pigpen1_2.png", "pigpen1_3.png", 4000, 1000, 500, 30)
+Pig1        = Tile('Pig1',        'Pig Pen',           'Livestock', 'All',    'pigpen1_0.png',      'pigpen1_1.png',
+                   'pigpen1_2.png', 'pigpen1_3.png', 4000, 1000, 500, 30)
 
-Pig2        = Tile("Pig2",        "Pig Pen",           "Livestock", "All",    "pigpen2_0.png",      "pigpen2_1.png",
-                   "pigpen2_2.png", "pigpen2_3.png", 2000, 1250, 650, 38)
+Pig2        = Tile('Pig2',        'Pig Pen',           'Livestock', 'All',    'pigpen2_0.png',      'pigpen2_1.png',
+                   'pigpen2_2.png', 'pigpen2_3.png', 2000, 1250, 650, 38)
 
-Pig3        = Tile("Pig3",        "Pig Pen",           "Livestock", "All",    "pigpen3_0.png",      "pigpen3_1.png",
-                   "pigpen3_2.png", "pigpen3_3.png", 2000, 1500, 800, 45)
+Pig3        = Tile('Pig3',        'Pig Pen',           'Livestock', 'All',    'pigpen3_0.png',      'pigpen3_1.png',
+                   'pigpen3_2.png', 'pigpen3_3.png', 2000, 1500, 800, 45)
 
-Greenhouse1 = Tile("Greenhouse1", "Greenhouse",        "Structure", "All",    "greenhouse1_X.png",  "greenhouse1_X.png",
-                   "greenhouse1_X.png", "greenhouse1_X.png", 2000, 500, 0, 30)
+Greenhouse1 = Tile('Greenhouse1', 'Greenhouse',        'Structure', 'All',    'greenhouse1_X.png',  'greenhouse1_X.png',
+                   'greenhouse1_X.png', 'greenhouse1_X.png', 2000, 500, 0, 30)
 
-Greenhouse2 = Tile("Greenhouse2", "Greenhouse",        "Structure", "All",    "greenhouse2_X.png",  "greenhouse2_X.png",
-                   "greenhouse2_X.png", "greenhouse2_X.png", 1000, 650, 0, 60)
+Greenhouse2 = Tile('Greenhouse2', 'Greenhouse',        'Structure', 'All',    'greenhouse2_X.png',  'greenhouse2_X.png',
+                   'greenhouse2_X.png', 'greenhouse2_X.png', 1000, 650, 0, 60)
 
-Greenhouse3 = Tile("Greenhouse3", "Greenhouse",        "Structure", "All",    "greenhouse3_0.png",  "greenhouse3_1.png",
-                   "greenhouse3_2.png", "greenhouse3_3.png", 1000, 800, 0, 120)
+Greenhouse3 = Tile('Greenhouse3', 'Greenhouse',        'Structure', 'All',    'greenhouse3_0.png',  'greenhouse3_1.png',
+                   'greenhouse3_2.png', 'greenhouse3_3.png', 1000, 800, 0, 120)
 
-Shed1       = Tile("Shed1",       "Shed",              "Structure", "All",    "shed1_X.png",        "shed1_X.png",
-                   "shed1_X.png", "shed1_X.png", 200, 50, 0, 20)
+Shed1       = Tile('Shed1',       'Shed',              'Structure', 'All',    'shed1_X.png',        'shed1_X.png',
+                   'shed1_X.png', 'shed1_X.png', 200, 50, 0, 20)
 
-Shed2       = Tile("Shed2",       "Shed",              "Structure", "All",    "shed2_X.png",        "shed2_X.png",
-                   "shed2_X.png", "shed2_X.png", 1000, 250, 0, 100)
+Shed2       = Tile('Shed2',       'Shed',              'Structure', 'All',    'shed2_X.png',        'shed2_X.png',
+                   'shed2_X.png', 'shed2_X.png', 1000, 250, 0, 100)
 
-Shed3       = Tile("Shed3",       "Shed",              "Structure", "All",    "shed3_0.png",        "shed3_1.png",
-                   "shed3_2.png", "shed3_3.png", 10000, 1000, 0, 400)
+Shed3       = Tile('Shed3',       'Shed',              'Structure', 'All',    'shed3_0.png',        'shed3_1.png',
+                   'shed3_2.png', 'shed3_3.png', 10000, 1000, 0, 400)
 
-Silo1       = Tile("Silo1",       "Silo",              "Structure", "All",    "silo1_X.png",        "silo1_X.png",
-                   "silo1_X.png", "silo1_X.png", 5000, 1000, 0, 100)
+Silo1       = Tile('Silo1',       'Silo',              'Structure', 'All',    'silo1_X.png',        'silo1_X.png',
+                   'silo1_X.png', 'silo1_X.png', 5000, 1000, 0, 100)
 
-Silo2       = Tile("Silo2",       "Silo",              "Structure", "All",    "silo2_X.png",        "silo2_X.png",
-                   "silo2_X.png", "silo2_X.png", 2500, 1500, 0, 150)
+Silo2       = Tile('Silo2',       'Silo',              'Structure', 'All',    'silo2_X.png',        'silo2_X.png',
+                   'silo2_X.png', 'silo2_X.png', 2500, 1500, 0, 150)
 
-Silo3       = Tile("Silo3",       "Silo",              "Structure", "All",    "silo3_X.png",        "silo3_X.png",
-                   "silo3_X.png", "silo3_X.png", 2500, 2000, 0, 250)
+Silo3       = Tile('Silo3',       'Silo',              'Structure', 'All',    'silo3_X.png',        'silo3_X.png',
+                   'silo3_X.png', 'silo3_X.png', 2500, 2000, 0, 250)
 
 
 #Dictionary of every Tile

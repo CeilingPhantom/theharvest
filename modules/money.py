@@ -45,11 +45,10 @@ class Money(Gamestate):
         self.persist = persistent
 
         self.grid = self.persist['grid']
+        self.plowingtiles_dict = self.persist['plowingtiles_dict']
 
         self.thisday_earnings = self.persist['thisday_earnings']
         self.thisday_maintenance = self.persist['thisday_maintenance']
-        print str(self.thisday_earnings)
-        print str(self.thisday_maintenance)
 
         self.set_display_profit(self.thisday_earnings, self.thisday_maintenance)
 
@@ -70,9 +69,9 @@ class Money(Gamestate):
 
         self.avgtxt = (self.font_body.render('Avg per Day', True, self.c_black),
                            self.font_body.render('(All Tiles)', True, self.c_black),
-                           self.font_body2.render('Earnings: $'+str(avg_earnings_maintenance[0]), True, self.c_black),
-                           self.font_body2.render('Maint.:  -$'+str(avg_earnings_maintenance[1]), True, self.c_black),
-                           self.font_body2.render('Profit:  '+self.profit_sign+str(self.profit), True, self.profittxt_color)
+                           self.font_body2.render('Earnings: $'+'{0:.2f}'.format(avg_earnings_maintenance[0]), True, self.c_black),
+                           self.font_body2.render('Maint.:  -$'+'{0:.2f}'.format(avg_earnings_maintenance[1]), True, self.c_black),
+                           self.font_body2.render('Profit:  '+self.profit_sign+'{0:.2f}'.format(self.profit), True, self.profittxt_color)
                           )
 
         self.avgtxt_rect = (self.avgtxt[0].get_rect(midleft=(self.settingsstatinfo_xalignleft, self.avgtxt_rect_centery[0])),
@@ -95,12 +94,15 @@ class Money(Gamestate):
             self.profittxt_color = self.c_black
 
     def calc_avg_earnings_maintenance(self):
-        avg_earnings = 0
-        avg_maintenance = 0
+        avg_earnings = 0.0
+        avg_maintenance = 0.0
         for row in range(self.grid_h):
             for col in range(self.grid_w):
-                avg_earnings += self.tiles[self.grid[row][col]].earnings
-                avg_maintenance += self.tiles[self.grid[row][col]].maintenance
+                if self.tiles[self.grid[row][col]].tiletype != 'None':
+                    avg_earnings += self.tiles[self.grid[row][col]].earnings/(self.cycle.earncycle[self.tiles[self.grid[row][col]].tiletype]/self.cycle.day)
+                    avg_maintenance += self.tiles[self.grid[row][col]].maintenance/(self.cycle.maincycle[self.tiles[self.grid[row][col]].tiletype]/self.cycle.day)
+        for plowingtile in self.plowingtiles_dict.keys():
+            avg_maintenance += self.tiles[self.plowingtiles_dict[plowingtile][0]].maintenance/(self.cycle.maincycle[self.tiles[self.plowingtiles_dict[plowingtile][0]].tiletype]/self.cycle.day)
         return (avg_earnings, avg_maintenance)
 
     def get_event(self, event):
