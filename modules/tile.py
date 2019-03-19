@@ -355,7 +355,7 @@ class Tile(Gamestate):
         self.grid[self.select_row][self.select_col] = 'Dirt0'
         self.money += self.sellp
         self.plowingtile_counter += 1
-        self.grid_tilecycle[row][col] = 0
+        self.grid_tilecycle[self.select_row][self.select_col] = 0
         self.persist['grid'] = self.grid
         self.persist['money'] = self.money
         self.persist['total_money_earned'] += self.sellp
